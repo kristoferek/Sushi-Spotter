@@ -1,0 +1,12 @@
+.filter ul{
+  /*display: inline-block;*/
+  list-style: none;
+}
+
+.filter ul li{
+  display: inline;
+}
+
+.filter ul li .on{
+  display: inline;
+}
