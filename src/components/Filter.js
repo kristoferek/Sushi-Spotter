@@ -55,20 +55,24 @@ class Filter extends React.Component{
       this.setState({ max: score });
       this.updateStarsList(list.children, this.state.limit, score);
     }
-
   }
 
   render () {
     return (
       <div className={this.props.className}>
-        Minimum score
-        <ul id="min">
-          {this.generateStarsList('min', this.state.limit, this.state.min)}
-        </ul>
-        Maximum score
-        <ul id="max">
-        {this.generateStarsList('max', this.state.limit, this.state.max)}
-        </ul>
+        <header><h3>Rating</h3></header>
+        <div className="rating">
+          <label>Minimum</label>
+          <ul id="min">
+            {this.generateStarsList('min', this.state.limit, this.state.min)}
+          </ul>
+        </div>
+        <div className="rating">
+          <label>Maximum</label>
+          <ul id="max">
+            {this.generateStarsList('max', this.state.limit, this.state.max)}
+          </ul>
+        </div>
       </div>
     );
   };

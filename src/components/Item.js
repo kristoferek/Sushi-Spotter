@@ -4,17 +4,17 @@ class Item extends React.Component{
   constructor(props){
     super(props);
     this.state = {
-      ID: this.props.placeID,
-      name: this.props.name,
-      address: this.props.address,
-      stars: this.props.stars,
       reviews: this.props.reviews
     }
   }
 
   render () {
     return (
-      <div className={this.props.className}>Item</div>
+      <li className={this.props.className}>
+        <h2>{this.props.place.name}</h2>
+        <address>{this.props.place.address}</address>
+        <div className="rating">{`Rating: ${this.props.place.rating}`}</div>
+      </li>
     );
   };
 }
