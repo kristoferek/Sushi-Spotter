@@ -1,0 +1,44 @@
+.details{
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  height: auto;
+  max-height: calc(100% - 60px);
+}
+
+.details *{
+  padding: 3px 7px;
+  margin: 0;
+}
+
+.details h2{
+  position: relative;
+  margin-right: 34px;
+}
+
+.close {
+  padding: 0;
+  position: absolute;
+  right: -17px;
+  top: 7px;
+  width: 20px;
+  height: 20px;
+  opacity: 0.3;
+}
+.close:hover {
+  opacity: 1;
+}
+.close:before, .close:after {
+  position: absolute;
+  left: 15px;
+  content: ' ';
+  height: 21px;
+  width: 2px;
+  background-color: #333;
+}
+.close:before {
+  transform: rotate(45deg);
+}
+.close:after {
+  transform: rotate(-45deg);
+}

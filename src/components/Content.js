@@ -1,38 +1,101 @@
 import React from 'react';
-import List from './List.js';
 import Map from './Map.js';
+import Info from './Info.js';
 
 class Content extends React.Component{
   constructor(props){
     super(props);
     this.state = {
       list: [],
-      displayStates: {
-        LOADING: 0,
-        LIST: 1,
-        ITEM: 2
-      },
-      displayState: ''
+      currentPlace: undefined,
+      displayPlace: false,
+      filter: {
+        min: 0,
+        max: 5
+      }
     };
-    this.addItemToList = this.addItemToList.bind(this);
-    this.handleFilter = this.handleFilter.bind(this);
+    this.filterList = this.filterList.bind(this);
+    this.updateFilter = this.updateFilter.bind(this);
+    this.toggleInfoView = this.toggleInfoView.bind(this);
+    this.handleNewPlace = this.handleNewPlace.bind(this);
   }
 
-  componentDidMount(){
-    this.setState({displayState: this.state.displayStates.LOADING});
+  componentWillMount() {
+    // JSON file url on myJason.com
+    const jsonServ = 'https://api.myjson.com/bins/p8igj';
+    let myList = [];
+
+    // Get and parse JSON file
+    fetch(jsonServ).then((response) => {
+      // If fetching ok parse JSON file
+      if (response.ok) { return response.json(); }
+      // else alert error
+      throw new Error('Network response was not ok.');
+    })
+    // If parsing ok
+    .then((myJson) => {
+      // sort by rating
+      myList = myJson.sort(function(a, b){return b.rating - a.rating});
+      // and update state.list
+      if (myList.length > 0) {
+        this.setState({
+          list:  myList,
+        });
+        // console.log(this.state.list);
+      }
+    })
+    // else alert error
+    .catch(function(error){
+      console.log( 'There was problem with fetching operation' + error.message);
+    });
+  }
+
+  toggleInfoView (place) {
+    console.log(place);
+    if (place) {
+      this.setState({
+        currentPlace: place,
+        displayPlace: true
+      });
+    } else {
+      this.setState({
+        currentPlace: undefined,
+        displayPlace: false
+      });
+    }
+  }
+
+  // Returns filtered list by rating
+  filterList (min, max) {
+    let array = [];
+    this.state.list.map(function(place) {
+      if (place.rating >= min && place.rating <= max) array.push(place);
+      return null;
+    });
+    return array;
+  }
+
+  // Handles filter parameters
+  updateFilter (min, max) {
+    this.setState({
+      filter: {
+        min: min,
+        max: max
+      }
+    });
   }
 
   // Define new place for list
   defineListElement (googlePlacesDetails) {
     // Add unique values
     let arrayElement = {
-      placeId: googlePlacesDetails.place_id,
-      name: googlePlacesDetails.name,
-      address: googlePlacesDetails.formatted_address,
       location: {
         lat: googlePlacesDetails.geometry.location.lat(),
         lng:  googlePlacesDetails.geometry.location.lng()
       },
+      name: googlePlacesDetails.name,
+      placeId: googlePlacesDetails.place_id,
+      address: googlePlacesDetails.formatted_address,
       rating: googlePlacesDetails.rating,
       reviews: []
     }
@@ -46,41 +109,45 @@ class Content extends React.Component{
     return arrayElement;
   }
 
-  addItemToList(googlePlacesDetails){
+  handleNewPlace(googlePlacesDetails){
     // Check if element already exists in a list
     let isInList = false;
-    for (var i = 0; i < this.state.list.length; i++) {
-      if (this.state.list[i].placeId === googlePlacesDetails.place_id) isInList = true;
-    }
+    this.state.list.map((el) => {
+      if (el.placeId === googlePlacesDetails.place_id) isInList = true;
+      return null;
+    });
 
     // If element doesn't exist in state.list
     if (!isInList) {
-      // create new array element
+      // Create new array element
       let newPlace = this.defineListElement(googlePlacesDetails);
+
       // Update state.list
-      this.setState((prevState)=>{
-        // make copy of previous state.list
+      this.setState((prevState) => {
+        // Make copy of previous state.list
         let listCopy = prevState.list.slice();
-        // push new element to list copy
+        // Push new element to list copy
         listCopy.push(newPlace);
-        // assign copy to current state.list
-        return {list: listCopy, displayState: prevState.displayStates.LIST}
+        // Assign copy to the current state.list
+        return {list: listCopy}
       });
+
+      // Return newly created element - the last in the state.list
       return this.state.list[this.state.list.length - 1];
     } else {
       return undefined;
     }
   }
 
-  handleFilter(){
-    console.log('handle filter');
-  }
-
   render () {
     return (
       <div className={this.props.className}>
-        <Map className="map" handleNewPlace={this.addItemToList}/>
-        <List className="list" list={this.state.list} handleFilter={this.handleFilter}/>
+        {//-- Map section responsible for Google Map API and Google Places API
+        }
+        <Map className="map" list={this.filterList(this.state.filter.min, this.state.filter.max)} toggleInfoView={this.toggleInfoView}/>
+        {//-- Restaurant list section responsible for displaying list or single restaurant details
+        }
+        <Info className="info" list={this.filterList(this.state.filter.min, this.state.filter.max)} currentPlace={this.state.currentPlace} toggleInfoView={this.toggleInfoView} updateFilter={this.updateFilter}/>
       </div>
     );
   };

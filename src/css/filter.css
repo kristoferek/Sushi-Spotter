@@ -1,36 +1,36 @@
 .filter{
-  height: 80px;
+  height: auto;
+  min-height: 50px;
+  padding: 5px 10px;
 }
 
 .filter h3{
   margin: 0;
 }
 
+.filter .rating{
+  display: inline-block;
+}
+
 .filter label{
   font-size: 0.8em;
   padding-right: 10px;
 }
-.filter ul, ul.places{
+.filter ul{
   display: inline-block;
   list-style: none;
   margin: 0;
   padding: 0em;
+  padding-right: 10px;
 }
 
 .filter ul li{
   font-size: 1.2em;
   display: inline;
   cursor: pointer;
+  color: red;
 }
 .filter ul li:hover{
-  text-shadow: 0 0 5px orange;
-}
-
-.places{
-  overflow-y: scroll;
-  height: 380px;
-}
-
-ul.places li h2{
-  padding: 3px 7px 0 0;
+  color: white;
+  text-shadow: 0 0 5px darkred;
 }
