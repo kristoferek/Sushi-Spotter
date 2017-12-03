@@ -1,0 +1,6 @@
+.infoName, .stars{
+  color: gray;
+}
+.infoName{
+  font-weight: 600;
+}

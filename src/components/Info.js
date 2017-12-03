@@ -33,7 +33,7 @@ class Info extends React.Component{
     } else {
       return (
         <div className={this.props.className}>
-          <Filter className="filter" />
+          <Filter className="filter" filter={this.props.filter} updateFilter={this.props.updateFilter}/>
           <List id='list' className='list' list={this.props.list} toggleInfoView={this.props.toggleInfoView} />
         </div>
       );

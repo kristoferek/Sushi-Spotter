@@ -1,25 +1,29 @@
 body {
   margin: 0;
   padding: 0;
-  font-family: sans-serif;
+  font-family: Roboto, sans-serif;
+  text-transform: capitalize;
   box-sizing: border-box;
+  background-color: black;
+  color: lightgray;
 }
 
 .container{
   width: 100%;
   max-width: 1200px;
-  margin: 0 auto;
+  margin: calc(calc(100vh - calc(480px + 80px)) / 2) auto;
 }
 
 .header{
   width: 100%;
   height: auto;
-  background-color: rgb(38, 110, 195);
   color: white;
 }
 .header h1{
   margin: 0;
   padding: 20px;
+  font-weight: 100;
+  color: gold;
 }
 
 .content{
