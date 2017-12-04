@@ -1,45 +1,57 @@
 .details{
   width: 100%;
-  margin: 0;
-  padding: 0;
-  height: auto;
-  max-height: calc(100% - 60px);
-  border-right: 1px solid darkgray;
+  height: 100%;
+  max-height: 100%;
+  background-color: rgba(100, 100, 100, 0.1);
 }
 
-.details *{
+.details header{
+  height: 90px;
+  border: 1px solid rgba(100, 100, 100, 0.4);
+}
+
+.details header h2, .details header address, .details header .rating{
   padding: 3px 7px;
-  margin: 0;
+}
+
+.details .placeInfo{
+  /*width: 100%;*/
+}
+
+.details address, .details .rating{
+  display: inline-block;
+  width: auto;
 }
 
 .details h2{
   position: relative;
+  margin: 0;
   margin-right: 34px;
 }
 
-.close {
+.details .streetView {
+  width: 100%;
+  height: calc((100% - 90px) / 2);
+  min-height: 250px;
+}
+
+#reviews{
+  height: calc((100% - 90px) / 2);
+}
+
+#reviews ul{
+  height: 100%;
   padding: 0;
-  position: absolute;
-  right: -17px;
-  top: 7px;
-  width: 20px;
-  height: 20px;
-  opacity: 0.6;
 }
-.close:hover {
-  opacity: 1;
+
+#reviews ul li{
+  padding: 6px 15px;
+  line-height: 1.4em;
+  border-bottom: 1px solid black;
+  font-weight: 200;
 }
-.close:before, .close:after {
-  position: absolute;
-  left: 15px;
-  content: ' ';
-  height: 21px;
-  width: 2px;
-  background-color: white;
-}
-.close:before {
-  transform: rotate(45deg);
-}
-.close:after {
-  transform: rotate(-45deg);
+
+#reviews ul li span{
+  padding: 0 5px 0 0;
+  color: gold;
 }

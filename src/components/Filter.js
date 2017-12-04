@@ -66,7 +66,7 @@ class Filter extends React.Component{
   render () {
     return (
       <div className={this.props.className}>
-        <header><h3>Rating</h3></header>
+        <header><h3>Rating filter</h3></header>
         <div className="rating">
           <label>Minimum</label>
           <ul id="min">

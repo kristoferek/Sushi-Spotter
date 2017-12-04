@@ -1,20 +1,7 @@
 li.item{
-  width: 100%;
-  margin: 0;
-  padding: 0;
   height: auto;
   cursor: pointer;
-}
-
-li.item  h3{
-  margin: 0;
-  font-weight: 100;
-  color: lightgreen;
-  padding: 5px 0;
-}
-
-li.item {
-  padding: 3px 7px 3px 7px;
+  padding: 3px 8px 8px 8px;
   border: 1px solid rgba(255, 100, 100, 0.2);
   transition: background-color 0.2s;
   -webkit-transition: background-color 0.5s;
@@ -22,4 +9,9 @@ li.item {
 
 li.item:hover{
   background-color: rgba(255, 100, 100, 0.1);
+}
+
+li.item  h3{
+  font-weight: 100;
+  padding: 5px 0;
 }

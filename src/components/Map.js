@@ -15,12 +15,9 @@ class Map extends React.Component{
         zoom: 14
       }
     };
-    this.showMarkers = this.showMarkers.bind(this);
     this.generateMarkers = this.generateMarkers.bind(this);
     this.showInfoWindow = this.showInfoWindow.bind(this);
     this.initMap = this.initMap.bind(this);
-    this.showItem = this.showItem.bind(this);
-    // this.handlePlaces = this.handlePlaces.bind(this);
     // this.handlePlaceDetails = this.handlePlaceDetails.bind(this);
     // this.geolocationMap = this.geolocationMap.bind(this);
     // Set callback initMap function accessible in global <Map> scope
@@ -40,7 +37,6 @@ class Map extends React.Component{
     if (nextProps.list.length === this.props.list.length) {
       refreshMarkers = nextProps.list.some((place, i) => place.place_id !== this.props.list[i].place_id);
     }
-    console.log(refreshMarkers);
 
     // Create and display markers if Content.state.list updates
     if (refreshMarkers)
@@ -56,6 +52,7 @@ class Map extends React.Component{
     ref.parentNode.insertBefore(script, ref);
   }
 
+  // Shows info window with event click listener displaying place info
   showInfoWindow (place, marker) {
     // Set content for info window
     const contentInfo = document.createElement('div');
@@ -76,7 +73,7 @@ class Map extends React.Component{
     // prevent "no google object" error from create-react-app parser
     const google = window.google;
 
-    // Initialize marker array
+    // Initialize and purge marker array
     this.markers.map((marker) => marker.setMap(null));
     this.markers = [];
     // Create markers
@@ -94,62 +91,27 @@ class Map extends React.Component{
         },
         map: map
       };
+
       // Create marker from props.list
       const newMarker = new google.maps.Marker(markerParameters);
 
-      // Remember place to wchich marker refers
+      // Remember place to which marker refers
       newMarker.place = place;
+      // Remember map to which place referes
+      place.map = this.map;
 
-      // Single click displays current infoWindows
+      // Single click displays current infoWindow
       newMarker.addListener('click', ()=>{
         this.showInfoWindow(place, newMarker);
       });
-      // Double click displaye place details
-      newMarker.addListener('dblclick', ()=>{
-        this.showItem(place);
+      // Double click displays place details
+      newMarker.addListener('dblclick', (e)=>{
+        this.props.toggleInfoView(place);
       });
 
       this.markers.push(newMarker);
       return true;
     });
-  }
-
-  // Create and add marker to map
-  showMarkers (places) {
-
-    // Set marker visibility Off
-    this.markers.map((marker) => {
-      if (this.props.list.some((place) =>
-        marker.place.place_id === place.place_id
-      )) {
-        marker.setMap(this.map)
-      } else {
-        marker.setMap(null);
-      };
-      return null;
-    })
-    // If is marker.place is in this.props.list make it visible
-  }
-
-  showItem (place) {
-    console.log('doubleclick - show item', place);
-  }
-
-  initMap () {
-    // prevent "no google object" error from create-react-app parser
-    const google = window.google;
-
-    // Initialize google map in HTML element with ref='map'
-    this.map = new google.maps.Map(this.refs.map, this.state.mapParameters);
-
-    // Create infoWindow with initial value of first place on the list
-    this.infoWindow = new google.maps.InfoWindow();
-
-    // Create markers
-    this.generateMarkers(this.props.list, this.map, this.infoWindow);
-
-    // Center map and show user
-    this.geolocationMap(this.map);
   }
 
   geolocationMap (map) {
@@ -167,14 +129,30 @@ class Map extends React.Component{
           position: pos,
           label: '\u2605',
           background: 'red',
-          map: map
         };
 
         map.setCenter(pos);
-        var myMarker = new google.maps.Marker(markerParameters);
-        console.log(myMarker);
+        let myMarker = new google.maps.Marker(markerParameters);
+        myMarker.setMap(map);
       });
     }
+  }
+
+  initMap () {
+    // prevent "no google object" error from create-react-app parser
+    const google = window.google;
+
+    // Initialize google map in HTML element with ref='map'
+    this.map = new google.maps.Map(this.refs.map, this.state.mapParameters);
+
+    // Create infoWindow with initial value of first place on the list
+    this.infoWindow = new google.maps.InfoWindow();
+
+    // Create markers
+    this.generateMarkers(this.props.list, this.map, this.infoWindow);
+
+    // Center map and show user
+    this.geolocationMap(this.map);
   }
 
   // initSearch(map) {
@@ -211,20 +189,7 @@ class Map extends React.Component{
   //   console.log(myList);
   // }
 
-  // Get places details
-  // handlePlaces (result, status) {
-  //   prevent "no google object" error from create-react-app parser
-  //   const google = window.google;
-  //   console.log(result);
-  //
-  //   if (status === google.maps.places.PlacesServiceStatus.OK){
-  //     for (var i = 0; i < result.length; i++) {
-  //       var parameters = {placeId: result[i].place_id};
-  //       var service = new google.maps.places.PlacesService(this.map);
-  //       service.getDetails(parameters, this.handlePlaceDetails);
-  //     }
-  //   }
-  // }
+
 
   // Add place to list
   // handlePlaceDetails(result, status){

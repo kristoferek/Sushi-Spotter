@@ -1,27 +1,27 @@
 .filter{
-  height: auto;
-  min-height: 50px;
-  padding: 5px 10px;
+  min-height: 90px;
 }
 
 .filter h3{
+  padding: 20px 10px 5px 10px;
   margin: 0;
 }
 
 .filter .rating{
+  padding: 0px 10px;
   display: inline-block;
 }
 
 .filter label{
   font-size: 0.8em;
   padding-right: 10px;
+  vertical-align: text-top;
 }
 .filter ul{
+  background: none;
   display: inline-block;
-  list-style: none;
-  margin: 0;
-  padding: 0em;
   padding-right: 10px;
+  overflow-y: auto;
 }
 
 .filter ul li{

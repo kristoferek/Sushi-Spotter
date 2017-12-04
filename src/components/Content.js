@@ -1,6 +1,8 @@
 import React from 'react';
+import Header from './Header.js';
 import Map from './Map.js';
 import Info from './Info.js';
+import '../css/content.css';
 
 class Content extends React.Component{
   constructor(props){
@@ -8,6 +10,17 @@ class Content extends React.Component{
     this.state = {
       list: [],
       currentPlace: undefined,
+      // currentPlace:{
+      //   map: google.maps.Map(),
+      //   location: {
+      //     lat: 52.23303800000001,
+      //     lng: 21.01950599999998
+      //   },
+      //   name: "Besuto Sushi Bar",
+      //   place_id: "ChIJlyrHiPbMHkcRG2jOH2ImCA4",
+      //   rating: 4.3,
+      //   address: "Nowy Świat 27, Warszawa"
+      // },
       displayPlace: false,
       filter: {
         min: 0,
@@ -141,14 +154,19 @@ class Content extends React.Component{
   render () {
     return (
       <div className={this.props.className}>
-        {//-- Map section responsible for Google Map API and Google Places API
-        }
-        <Map className="map"
+        <div className="main">
+          <Header className="header">
+            <h1>Powiśle Sushi <br />Spotter</h1>
+          </Header>
+          {//-- Map section responsible for Google Map API and Google Places API
+          }
+          <Map className="map"
           list={this.filterList(this.state.filter.min, this.state.filter.max)}
           toggleInfoView={this.toggleInfoView}
-        />
-        {//-- Restaurant list section responsible for displaying list or single restaurant details
-        }
+          />
+          {//-- Restaurant list section responsible for displaying list or single restaurant details
+          }
+        </div>
         <Info className="info"
           list={this.filterList(this.state.filter.min, this.state.filter.max)}
           currentPlace={this.state.currentPlace}
