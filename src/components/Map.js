@@ -58,7 +58,7 @@ class Map extends React.Component{
     const contentInfo = document.createElement('div');
     // Add listener to display place Info onClick
     contentInfo.addEventListener('click', (e)=>{
-      this.props.toggleInfoView(place);
+      this.props.updateCurrentPlace(place);
     });
     contentInfo.innerHTML = `<div class="infoName">${place.name}</div>
     <div class="stars">Rating: ${place.rating}</div>`;
@@ -104,7 +104,7 @@ class Map extends React.Component{
       });
       // Double click displays place details
       newMarker.addListener('dblclick', (e)=>{
-        this.props.toggleInfoView(place);
+        this.props.updateCurrentPlace(place);
       });
 
       this.markers.push(newMarker);

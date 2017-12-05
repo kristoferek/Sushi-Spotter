@@ -53,7 +53,7 @@
   background-repeat: no-repeat;
 }
 
-@media (min-width: 797px) {
+@media (min-width: 800px) {
     .content{
       height: calc(100vh - 100px);
     }

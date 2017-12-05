@@ -30,7 +30,7 @@ class Content extends React.Component{
     };
     this.filterList = this.filterList.bind(this);
     this.updateFilter = this.updateFilter.bind(this);
-    this.toggleInfoView = this.toggleInfoView.bind(this);
+    this.updateCurrentPlace = this.updateCurrentPlace.bind(this);
     this.updateMap = this.updateMap.bind(this);
     // this.handleNewPlace = this.handleNewPlace.bind(this);
   }
@@ -71,7 +71,7 @@ class Content extends React.Component{
     });
   }
 
-  toggleInfoView (place) {
+  updateCurrentPlace (place) {
     if (place) {
       this.setState({
         currentPlace: place,
@@ -172,7 +172,7 @@ class Content extends React.Component{
           <Map className="map"
           list={this.filterList(this.state.filter.min, this.state.filter.max)}
           updateMap={this.updateMap}
-          toggleInfoView={this.toggleInfoView}
+          updateCurrentPlace={this.updateCurrentPlace}
           />
           {//-- Restaurant list section responsible for displaying list or single restaurant details
           }
@@ -181,7 +181,7 @@ class Content extends React.Component{
         <Info className="info"
           list={this.filterList(this.state.filter.min, this.state.filter.max)}
           currentPlace={this.state.currentPlace}
-          toggleInfoView={this.toggleInfoView}
+          updateCurrentPlace={this.updateCurrentPlace}
           filter={this.state.filter}
           updateFilter={this.updateFilter}
           map={this.state.map}

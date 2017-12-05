@@ -29,17 +29,11 @@
   margin-right: 34px;
 }
 
-.details .streetView {
-  width: 100%;
-  height: calc((100% - 90px) / 2);
-  min-height: 250px;
+#reviews, #placePhotos{
+  height: 100vh;
 }
 
-#reviews{
-  height: calc((100% - 90px) / 2);
-}
-
-#reviews ul{
+#reviews ul, #placePhotos ul{
   height: 100%;
   padding: 0;
 }
@@ -54,4 +48,10 @@
 #reviews ul li span{
   padding: 0 5px 0 0;
   color: gold;
+}
+
+@media (min-width: 800px) {
+  #reviews, #placePhotos{
+    height: calc((100% - 90px) / 2);
+  }
 }
