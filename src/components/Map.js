@@ -97,8 +97,6 @@ class Map extends React.Component{
 
       // Remember place to which marker refers
       newMarker.place = place;
-      // Remember map to which place referes
-      place.map = this.map;
 
       // Single click displays current infoWindow
       newMarker.addListener('click', ()=>{
@@ -144,6 +142,9 @@ class Map extends React.Component{
 
     // Initialize google map in HTML element with ref='map'
     this.map = new google.maps.Map(this.refs.map, this.state.mapParameters);
+
+    //Update parent component Content state.map reference
+    this.props.updateMap(this.map);
 
     // Create infoWindow with initial value of first place on the list
     this.infoWindow = new google.maps.InfoWindow();

@@ -4,30 +4,11 @@ import Filter from './Filter.js';
 import List from './List.js';
 
 class Info extends React.Component{
-
-  listView(){
-    document.getElementById('list').classList.remove('hidden');
-    document.getElementById('details').classList.add('hidden');
-  };
-
-  detailsView(){
-    document.getElementById('details').classList.remove('hidden');
-    document.getElementById('list').classList.add('hidden');
-  };
-
-  // componentWillReceiveProps(nextProps) {
-  //   if (nextProps.currentPlace !== undefined) {
-  //     this.detailsView();
-  //   } else {
-  //     this.listView();
-  //   }
-  // }
-
   render () {
     if (this.props.currentPlace !== undefined){
       return (
         <div className={this.props.className}>
-          <Details id='details' className='details' currentPlace={this.props.currentPlace}  listView={this.listView} toggleInfoView={this.props.toggleInfoView} />
+          <Details id='details' className='details' currentPlace={this.props.currentPlace}  listView={this.listView} toggleInfoView={this.props.toggleInfoView} map={this.props.map}/>
         </div>
       );
     } else {

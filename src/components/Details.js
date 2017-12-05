@@ -11,17 +11,19 @@ class Details extends React.Component{
   }
 
   // Initialize Google StreetView and Places reviews
-  componentDidMount() {
+  componentDidMount(props) {
     this.initPanorama(this.props.currentPlace.location);
-    this.getReviews(this.props.currentPlace);
+    if (this.props.map) this.getReviews(this.props.currentPlace, this.props.map)
+    else console.log('Problem with this.props.map');;
   }
 
   // Update Google StreetView and Places reviews
   componentWillReceiveProps(nextProps) {
-    if (!this.props.currentplace || (nextProps.currentplace.place_id !== this.props.currentplace.place_id)){
-      console.log(nextProps, this.props);
-      this.getReviews(nextProps.currentPlace);
-      this.initPanorama(this.props.currentPlace.location);
+    if (nextProps.currentPlace) {
+      if (!this.props.currentplace || (nextProps.currentplace.place_id !== this.props.currentplace.place_id)){
+        this.getReviews(nextProps.currentPlace, nextProps.map);
+        this.initPanorama(nextProps.currentPlace.location);
+      }
     }
   }
 
@@ -42,23 +44,25 @@ class Details extends React.Component{
   }
 
   // Get place reviews from Google Places
-  getReviews = (place) => {
+  getReviews = (place, map) => {
     //  prevent "no google object" error from create-react-app parser
     const google = window.google;
 
     // Initialize Google places service
-    let service = new google.maps.places.PlacesService(place.map);
-    // Request place details
-    service.getDetails({placeId: place.place_id}, (placeDetails, status) => {
-      if (status === google.maps.places.PlacesServiceStatus.OK){
-        // Get only review rating and text properities from Google Places element
-        let currentReviews = placeDetails.reviews.map((review) => { return{text: review.text, rating: review.rating}} );
-        // update reviews in this.state
-        this.setState({
-          reviews: currentReviews
-        });
-      }
-    });
+    if (map) {
+      let service = new google.maps.places.PlacesService(map);
+      // Request place details
+      service.getDetails({placeId: place.place_id}, (placeDetails, status) => {
+        if (status === google.maps.places.PlacesServiceStatus.OK){
+          // Get only review rating and text properities from Google Places element
+          let currentReviews = placeDetails.reviews.map((review) => { return{text: review.text, rating: review.rating}} );
+          // update reviews in this.state
+          this.setState({
+            reviews: currentReviews
+          });
+        }
+      });
+    } else console.log('Problem with map object');
   }
 
   // Generate list of <li> elemets with review details

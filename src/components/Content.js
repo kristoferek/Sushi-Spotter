@@ -9,9 +9,10 @@ class Content extends React.Component{
     super(props);
     this.state = {
       list: [],
+      //   map: google.maps.Map(),
+      // map: undefined,
       currentPlace: undefined,
       // currentPlace:{
-      //   map: google.maps.Map(),
       //   location: {
       //     lat: 52.23303800000001,
       //     lng: 21.01950599999998
@@ -30,6 +31,7 @@ class Content extends React.Component{
     this.filterList = this.filterList.bind(this);
     this.updateFilter = this.updateFilter.bind(this);
     this.toggleInfoView = this.toggleInfoView.bind(this);
+    this.updateMap = this.updateMap.bind(this);
     // this.handleNewPlace = this.handleNewPlace.bind(this);
   }
 
@@ -60,6 +62,12 @@ class Content extends React.Component{
     // else alert error
     .catch(function(error){
       console.log( 'There was problem with fetching operation' + error.message);
+    });
+  }
+
+  updateMap (map) {
+    this.setState({
+      map: map
     });
   }
 
@@ -154,6 +162,7 @@ class Content extends React.Component{
   render () {
     return (
       <div className={this.props.className}>
+
         <div className="main">
           <Header className="header">
             <h1>Powiśle Sushi <br />Spotter</h1>
@@ -162,17 +171,20 @@ class Content extends React.Component{
           }
           <Map className="map"
           list={this.filterList(this.state.filter.min, this.state.filter.max)}
+          updateMap={this.updateMap}
           toggleInfoView={this.toggleInfoView}
           />
           {//-- Restaurant list section responsible for displaying list or single restaurant details
           }
         </div>
+
         <Info className="info"
           list={this.filterList(this.state.filter.min, this.state.filter.max)}
           currentPlace={this.state.currentPlace}
           toggleInfoView={this.toggleInfoView}
           filter={this.state.filter}
           updateFilter={this.updateFilter}
+          map={this.state.map}
         />
       </div>
     );
