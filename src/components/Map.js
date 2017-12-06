@@ -34,6 +34,7 @@ class Map extends React.Component{
 
   componentWillReceiveProps(nextProps) {
     let refreshMarkers = true;
+    // Check if new props.list differs from current props.list and decide to refresh markers
     if (nextProps.list.length === this.props.list.length) {
       refreshMarkers = nextProps.list.some((place, i) => place.place_id !== this.props.list[i].place_id);
     }
@@ -58,7 +59,7 @@ class Map extends React.Component{
     const contentInfo = document.createElement('div');
     // Add listener to display place Info onClick
     contentInfo.addEventListener('click', (e)=>{
-      this.props.updateCurrentPlace(place);
+      this.props.handlePlaces(place);
     });
     contentInfo.innerHTML = `<div class="infoName">${place.name}</div>
     <div class="stars">Rating: ${place.rating}</div>`;
@@ -70,6 +71,9 @@ class Map extends React.Component{
 
   // Create and add marker to map
   generateMarkers (places, map, infoWindow) {
+
+    if (!map) return console.log('Google maps hasn\'t intialize yet, be patien... Thank You!');
+
     // prevent "no google object" error from create-react-app parser
     const google = window.google;
 
@@ -104,7 +108,7 @@ class Map extends React.Component{
       });
       // Double click displays place details
       newMarker.addListener('dblclick', (e)=>{
-        this.props.updateCurrentPlace(place);
+        this.props.handlePlaces(place);
       });
 
       this.markers.push(newMarker);

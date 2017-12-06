@@ -1,5 +1,5 @@
 import React from 'react';
-import Header from './Header.js';
+import {Header} from './Elements.js';
 import Map from './Map.js';
 import Info from './Info.js';
 import '../css/content.css';
@@ -30,7 +30,7 @@ class Content extends React.Component{
     };
     this.filterList = this.filterList.bind(this);
     this.updateFilter = this.updateFilter.bind(this);
-    this.updateCurrentPlace = this.updateCurrentPlace.bind(this);
+    this.handlePlaces = this.handlePlaces.bind(this);
     this.updateMap = this.updateMap.bind(this);
     // this.handleNewPlace = this.handleNewPlace.bind(this);
   }
@@ -71,18 +71,41 @@ class Content extends React.Component{
     });
   }
 
-  updateCurrentPlace (place) {
+  handlePlaces (place) {
+    // If place parameter was given
     if (place) {
+      let array = this.state.list.slice();
+      let index = undefined;
+      // Check if place is in list of places, if so store its index
+      let existsInList = array.some((element, i) => {
+        if (place.place_id === element.place_id) {
+          index = i;
+          return true;
+        }
+        return false;
+      });
+
+      // If place is in list of places UPDATE list element
+      console.log(existsInList);
+      if (existsInList) array[index] = place
+      // If place isn't in list ADD element to the list
+      else array.push(place);
+
+      // Update list, current place and set display state to true
       this.setState({
+        list: array,
         currentPlace: place,
         displayPlace: true
       });
+    // If there was no function parameter given
     } else {
+      // Empty current place and set display state to false
       this.setState({
         currentPlace: undefined,
         displayPlace: false
       });
     }
+    return this.state.currentPlace;
   }
 
   // Returns filtered list by rating
@@ -165,14 +188,14 @@ class Content extends React.Component{
 
         <div className="main">
           <Header className="header">
-            <h1>Powiśle Sushi <br />Spotter</h1>
+            <h1>Sushi <br />Spotter</h1>
           </Header>
           {//-- Map section responsible for Google Map API and Google Places API
           }
           <Map className="map"
           list={this.filterList(this.state.filter.min, this.state.filter.max)}
           updateMap={this.updateMap}
-          updateCurrentPlace={this.updateCurrentPlace}
+          handlePlaces={this.handlePlaces}
           />
           {//-- Restaurant list section responsible for displaying list or single restaurant details
           }
@@ -181,7 +204,7 @@ class Content extends React.Component{
         <Info className="info"
           list={this.filterList(this.state.filter.min, this.state.filter.max)}
           currentPlace={this.state.currentPlace}
-          updateCurrentPlace={this.updateCurrentPlace}
+          handlePlaces={this.handlePlaces}
           filter={this.state.filter}
           updateFilter={this.updateFilter}
           map={this.state.map}

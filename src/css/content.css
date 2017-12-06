@@ -1,6 +1,6 @@
 .content{
   width: 100%;
-  min-width: 360px;
+  min-width: 320px;
   height: auto;
   display: flex;
   flex-direction: row;
@@ -38,6 +38,8 @@
   padding: 14px 20px 10px 100px;
   line-height: 32px;
   font-size: 32;
+  font-weight: 300;
+  text-transform: uppercase;
   position: relative;
 }
 

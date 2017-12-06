@@ -1,7 +1,9 @@
+@import url('https://fonts.googleapis.com/css?family=Roboto:100,300,400&subset=latin-ext');
+
 body {
   margin: 0;
   padding: 0;
-  font-family: Roboto, sans-serif;
+  font-family: 'Roboto', sans-serif;
   text-transform: capitalize;
   box-sizing: border-box;
   background-color: black;
@@ -20,8 +22,7 @@ h1, h2, h3, ul, p{
 
 h1, h2, h3{
   color: red;
-  text-shadow: 0 0 3px black;
-  font-weight: 200;
+  font-weight: 300;
 }
 
 ul{
@@ -37,33 +38,7 @@ ul{
   display: none;
 }
 
-.close {
-  padding: 0;
-  position: absolute;
-  right: -17px;
-  top: 7px;
-  width: 20px;
-  height: 20px;
-  opacity: 0.6;
-}
-.close:hover {
-  opacity: 1;
-}
-.close:before, .close:after {
-  position: absolute;
-  left: 15px;
-  content: ' ';
-  height: 21px;
-  width: 2px;
-  background-color: white;
-}
-.close:before {
-  transform: rotate(45deg);
-}
-.close:after {
-  transform: rotate(-45deg);
-}
-
+/* Scrollbar styling */
 ul::-webkit-scrollbar {
     width: 8px;
     background-color: red;

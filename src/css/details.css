@@ -3,19 +3,32 @@
   height: 100%;
   max-height: 100%;
   background-color: rgba(100, 100, 100, 0.1);
+  position: relative;
 }
 
 .details header{
-  height: 90px;
+  min-height: 90px;
+  width: 100%;
   border: 1px solid rgba(100, 100, 100, 0.4);
+}
+
+.details header .controls, .details header .placeInfo{
+  display: inline-block;
+}
+
+.details header .controls{
+  width: 100px;
+  height: auto;
+  text-align: right;
+  vertical-align: top;
+}
+
+.details header .placeInfo{
+  width: calc(100% - 100px);
 }
 
 .details header h2, .details header address, .details header .rating{
   padding: 3px 7px;
-}
-
-.details .placeInfo{
-  /*width: 100%;*/
 }
 
 .details address, .details .rating{
@@ -23,14 +36,8 @@
   width: auto;
 }
 
-.details h2{
-  position: relative;
-  margin: 0;
-  margin-right: 34px;
-}
-
 #reviews, #placePhotos{
-  height: 100vh;
+  height: 60vh;
 }
 
 #reviews ul, #placePhotos ul{
@@ -39,10 +46,11 @@
 }
 
 #reviews ul li{
-  padding: 6px 15px;
+  font-size: 0.9em;
+  font-weight: 300;
   line-height: 1.4em;
+  padding: 6px 15px;
   border-bottom: 1px solid black;
-  font-weight: 200;
 }
 
 #reviews ul li span{
@@ -54,4 +62,141 @@
   #reviews, #placePhotos{
     height: calc((100% - 90px) / 2);
   }
+}
+
+/* modal */
+.modal{
+  position: absolute;
+  width: 100%;
+  max-width: calc(100% - 80px);
+  height: auto;
+  max-height: calc(80% - 40px);
+  top: 100px;
+  left: 20px;
+  transform-origin: center;
+  padding: 20px;
+  background-color: black;
+  border: 1px solid red;
+  border-radius: 5px;
+}
+
+.modal textarea, .modal label, .modal .button{
+  display: block;
+  width: 100%;
+  padding: 0;
+  margin: 0;
+  margin-bottom: 8px;
+}
+
+.modal textarea{
+  width: calc(100% - 10px);
+  padding: 5px;
+  background-color: lightgray;
+  border: 1px solid darkgrey;
+  border-radius:  3px;
+}
+
+.modal .button{
+  min-width: 100px;
+  height: auto;
+  border: 1px solid red;
+  border-radius: 3px;
+  padding: 10px 0;
+  text-align: center;
+  cursor: pointer;
+}
+
+
+/* Controls */
+.controls{
+  min-width: 100px;
+  height: auto;
+}
+
+/* Close symbol*/
+.close {
+  display: inline-block;
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  right: 0;
+  top: 0;
+  opacity: 0.6;
+  padding: 10px;
+  cursor: pointer;
+}
+
+.close:hover {
+  opacity: 1;
+}
+
+.close:before, .close:after {
+  position: absolute;
+  top: 10px;
+  right: 17px;
+  content: ' ';
+  height: 20px;
+  width: 3px;
+  background-color: red;
+}
+
+.close:before {
+  transform: rotate(-45deg);
+}
+.close:after {
+  transform: rotate(45deg);
+}
+
+/* Back symbol*/
+.back {
+  display: inline-block;
+  position: relative;
+  width: 15px;
+  height: 40px;
+  opacity: 0.6;
+  padding: 10px;
+  cursor: pointer;
+}
+
+.back:hover {
+  background-color: rgba(255,255,255,0.1);
+  opacity: 1;
+}
+
+.back:before, .back:after {
+  position: absolute;
+  top: 10px;
+  right: 17px;
+  content: ' ';
+  height: 20px;
+  width: 3px;
+  background-color: red;
+}
+
+.back:before {
+  transform: skewX(-30deg);
+}
+.back:after {
+  top: 30px;
+  transform: skewX(30deg);
+}
+
+/* Add symbol*/
+.add {
+  display: inline-block;
+  position: relative;
+  width: 40px;
+  height: 40px;
+  opacity: 0.6;
+  padding: 10px;
+  background-image: url('./../img/star.png');
+  background-position: 7px 7px;
+  background-repeat: no-repeat;
+  background-size: 44px auto;
+  cursor: pointer;
+}
+
+.add:hover {
+  background-color: rgba(255,255,255,0.1);
+  opacity: 1;
 }
