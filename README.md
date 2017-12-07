@@ -9,4 +9,4 @@ Webpage stack consist of:
 
 Fill free to use it :-)
 
-**[Sushi Spotter](http://kristoferek.github.io/Sushi-Spotter)
+[Sushi Spotter](http://kristoferek.github.io/Sushi-Spotter)
