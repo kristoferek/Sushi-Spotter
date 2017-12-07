@@ -8,4 +8,5 @@ Webpage stack consist of:
 - Google Maps API -> Maps, Places, Search
 
 Fill free to use it :-)
-[Sushi Spotter](http://kristoferek.github.io/Sushi-Spotter)
+
+**[Sushi Spotter](http://kristoferek.github.io/Sushi-Spotter)
