@@ -1,19 +1,14 @@
 import React from 'react';
-import {Div, Header, Modal, SectionList, Symbol, Title} from './Elements.js';
+import {Div, Header, Modal, List, Symbol, Title} from './Elements.js';
+import ReviewForm from './ReviewForm.js';
 import '../css/details.css';
-
 
 class Details extends React.Component{
   constructor(props){
     super(props);
     this.state = {
-      reviews: [],
-      photos: [],
-      addReview: false,
-      reviewTextValue: '',
-      reviewRatingValue: 5
+      displayModal: false,
     };
-    this.modal = undefined;
   }
 
   // Initialize Google StreetView and Places reviews
@@ -23,7 +18,6 @@ class Details extends React.Component{
       else
         if (this.props.currentPlace)
           if (!this.props.currentPlace.reviews)
-          console.log('didMount and initDetails');
           this.initDetails(this.props.currentPlace, this.props.map);
     }
   }
@@ -38,35 +32,14 @@ class Details extends React.Component{
       // next currentPlace id is differrent then previous id
       if ((!this.props.currentPlace)
       || ((this.props.currentPlace) && (nextProps.currentPlace.place_id !== this.props.currentPlace.place_id))) {
-        // If next currentPlace.reviews has initial values
-        if (nextProps.currentPlace.reviews) {
-          // Use next currentPlace them to update state
-          this.updateDetails(nextProps.currentPlace);
         // If there are no initial values of currentPlace.reviews
-        } else {
+        if (!nextProps.currentPlace.reviews) {
           // initialize them with Google Places
-          console.log('willReceiveProps and initDetails');
           if (nextProps.map) this.initDetails(nextProps.currentPlace, nextProps.map)
           else console.log('Problem with this.props.map');
         }
-      // If previous currentPlace was specified and
-      // and next currentPlace id equals previous currentPlace id
-      } else {
-        // If new reviews arrau is longer than provious
-        if (nextProps.currentPlace.reviews.length > this.props.currentPlace.reviews.length) {
-          // Use next currentPlace them to update state
-          this.updateDetails(nextProps.currentPlace);
-        }
       }
     }
-  }
-
-  // Update place reviews and photos from parent
-  updateDetails = (place) => {
-    this.setState({
-      reviews: place.reviews,
-      photos: place.photos
-    });
   }
 
   // initialize Details from Google Places
@@ -129,68 +102,39 @@ class Details extends React.Component{
 
   openModal = () => {
     this.setState({
-      addReview: true
+      displayModal: true
     })
   };
 
   closeModal = () => {
     this.setState({
-      addReview: false
+      displayModal: false
     })
   };
 
-  handleReviewText = (e) => {
-    this.setState({
-      reviewTextValue: e.target.value
-    })
-  }
-
-  handleReviewRating = (e) => {
-    this.setState({
-      reviewRatingValue: e.target.value
-    })
-  }
-
-  handleNewReview = () => {
+  handleNewReview = (reviewTextValue, reviewRatingValue) => {
     this.closeModal();
     let newReview = {
-      text: this.state.reviewTextValue,
-      rating: this.state.reviewRatingValue
+      text: reviewTextValue,
+      rating: reviewRatingValue
     }
-
     let updatedPlace = this.props.currentPlace;
     updatedPlace.reviews.push(newReview);
 
     this.props.handlePlaces(updatedPlace);
-    // this.updateDetails(updatePlace);
   }
 
   render () {
-    let photos, reviews;
-    if (this.props.currentPlace) {
-
-    }
-
-    let noContent = 'No sushi restaurant here!'
+    const NOCONTENT = 'No sushi restaurant found!'
 
     if (this.props.currentPlace){
-      if (this.props.currentPlace.photos) if (this.props.currentPlace.photos.length) photos = (
-      <SectionList id='placePhotos'>
-        {this.listPhotos(this.props.currentPlace.photos)}
-      </SectionList>
-      );
-      if (this.props.currentPlace.reviews) if (this.props.currentPlace.reviews.length) reviews = (
-        <SectionList id='reviews'>
-          {this.listReviews(this.props.currentPlace.reviews)}
-        </SectionList>
-      );
 
       return (
         <Div id={this.props.id} className={this.props.className}>
 
           <Header>
             <Div className='placeInfo'>
-              <Title handlePlaces={this.props.handlePlaces}>
+              <Title>
                 {this.props.currentPlace.name}
               </Title>
               <address>{this.props.currentPlace.address}</address>
@@ -203,28 +147,21 @@ class Details extends React.Component{
               <Symbol className='add' handler={this.openModal} alt="Add review"></Symbol>
               <Symbol className='back' handler={this.props.handlePlaces} alt="Go back"></Symbol>
             </Div>
-
           </Header>
 
-          {photos}
-          {reviews}
+          <List elements={this.props.currentPlace.photos} id='photos' generateList={this.listPhotos} />
 
-          <Modal className={this.state.addReview ? 'modal' : 'modal hidden'} handler={this.closeModal}>
-            <form id='newReview' >
-              <label htmlFor="reviewText">You review:</label>
-              <textarea id="reviewText" type="text" name="reviewText"  rows="5" value={this.state.reviewTextValue} onChange={this.handleReviewText} placeholder="Here You can leave your comment..." />
-              <input type="range" min="1" max="5" step="1" name="" defaultValue="5" value={this.state.handleReviewRating} onChange={this.handleReviewRating} />
-              <Symbol id='submitReview' className='button' handler={this.handleNewReview} alt="Submit review">
-                Add my Review
-              </Symbol>
-            </form>
+          <List elements={this.props.currentPlace.reviews} id='reviews' generateList={this.listReviews} />
+
+          <Modal className={this.state.displayModal ? 'modal' : 'modal hidden'} handler={this.closeModal} display={this.state.displayModal}>
+            <ReviewForm id='newReview' handleNewReview={this.handleNewReview} />
           </Modal>
         </Div>
       );
     } else {
       return (
         <Div id={this.props.id} className={this.props.className}>
-        {noContent}
+          {NOCONTENT}
         </Div>
       );
     }

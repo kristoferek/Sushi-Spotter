@@ -24,7 +24,6 @@
 .content .map{
   width: 100%;
   height: calc(30vh);
-  border: 1px solid gray;
 }
 
 .content .header{

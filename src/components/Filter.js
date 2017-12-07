@@ -17,7 +17,7 @@ class Filter extends React.Component{
 
   // Generates actual rating score with stars
   // Returns array of empty and filled stars
-  scoreStars(limit, score){
+  getStarsArray(limit, score){
     var array = [];
     for (var i = 0; i < limit; i++) {
       if (i < score) {
@@ -34,14 +34,14 @@ class Filter extends React.Component{
   // Generates list of stars <li> elements showing rating score
   // Adds event listener for every star <li>
   generateStarsList(type, limit, score){
-    return this.scoreStars(limit, score).map((star, index) =>
+    return this.getStarsArray(limit, score).map((star, index) =>
       <li key={type + (Number(index) + 1)} data-number={Number(index) + 1} onClick={this.handleStarClick}>{star.toString()}</li>
     )
   }
 
   // Updates score list depending on given score and limit
   updateStarsList(list, limit, score){
-    var array = this.scoreStars(limit, score);
+    var array = this.getStarsArray(limit, score);
     for (var i = 0; i < limit; i++) {
       list[i].innerText = array[i].toString()
     }
@@ -79,6 +79,7 @@ class Filter extends React.Component{
             {this.generateStarsList('max', this.state.limit, this.props.filter.max)}
           </ul>
         </div>
+        {this.props.children}
       </div>
     );
   };

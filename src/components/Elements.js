@@ -1,61 +1,58 @@
 import React from 'react';
 
-class Header extends React.Component{
-  render(){
-    return (
-      <header className={this.props.className}> {this.props.children} </header>
-    );
-  }
+function Header (props) {
+  return <header className={props.className}> {props.children} </header>
 }
 
-class Symbol extends React.Component{
-  render(){
-    return <div className={this.props.className} id={this.props.id} onClick={(e)=>this.props.handler()} title={this.props.alt}>{this.props.children}</div>;
-  }
+function Symbol (props) {
+    return <div className={props.className} id={props.id} onClick={(e)=>props.handler()} title={props.alt}>{props.children}</div>;
 }
 
-class Title extends React.Component {
-  render () {
-    return (
-      <h2>
-        {this.props.children}
-      </h2>
-    );
-  }
+function Title (props) {
+  return (
+    <h2>
+      {props.children}
+    </h2>
+  );
 }
 
-class SectionList extends React.Component {
-  render () {
-    return (
-      <section ref={this.props.id} id={this.props.id} className={this.props.id}>
-        <ul>
-          {this.props.children}
-        </ul>
-      </section>
-    );
-  }
+function SectionList (props) {
+  return (
+    <section id={props.id} className={props.id}>
+      <ul>
+        {props.children}
+      </ul>
+    </section>
+  );
 }
 
-class Div extends React.Component {
-  render () {
+function Div (props) {
     return (
-      <div id={this.props.id} className={this.props.className}>
-        {this.props.children}
+      <div id={props.id} className={props.className}>
+        {props.children}
       </div>
     );
-  }
 }
 
-class Modal extends React.Component{
-  render () {
+function Modal(props) {
+  if (props.display) {
     return (
-      <Div className={this.props.className} id={this.props.id}>
-        <Symbol id='closeModal' className='close' handler={this.props.handler} alt="Close" />
-        {this.props.children}
+      <Div className={props.className} id={props.id}>
+      <Symbol id='closeModal' className='close' handler={props.handler} alt="Close" />
+      {props.children}
       </Div>
     );
-  }
+  } else return null;
 }
 
+function List (props) {
+  if (props.elements) if (props.elements.length)
+    return (
+      <SectionList id={props.id}>
+        {props.generateList(props.elements)}
+      </SectionList>
+    );
+  return null;
+}
 
-export {Div, Modal, Header, SectionList, Title, Symbol};
+export {Div, Header, Modal, List, SectionList, Title, Symbol};

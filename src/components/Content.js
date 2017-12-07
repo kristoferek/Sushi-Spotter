@@ -86,7 +86,6 @@ class Content extends React.Component{
       });
 
       // If place is in list of places UPDATE list element
-      console.log(existsInList);
       if (existsInList) array[index] = place
       // If place isn't in list ADD element to the list
       else array.push(place);
@@ -183,6 +182,7 @@ class Content extends React.Component{
   // }
 
   render () {
+    const filteredList = this.filterList(this.state.filter.min, this.state.filter.max);
     return (
       <div className={this.props.className}>
 
@@ -193,7 +193,7 @@ class Content extends React.Component{
           {//-- Map section responsible for Google Map API and Google Places API
           }
           <Map className="map"
-          list={this.filterList(this.state.filter.min, this.state.filter.max)}
+          list={filteredList}
           updateMap={this.updateMap}
           handlePlaces={this.handlePlaces}
           />
@@ -202,7 +202,7 @@ class Content extends React.Component{
         </div>
 
         <Info className="info"
-          list={this.filterList(this.state.filter.min, this.state.filter.max)}
+          list={filteredList}
           currentPlace={this.state.currentPlace}
           handlePlaces={this.handlePlaces}
           filter={this.state.filter}
