@@ -65,12 +65,14 @@ class Content extends React.Component{
     });
   }
 
+  // Sets reference in state to the newly created Google Map
   updateMap (map) {
     this.setState({
       map: map
     });
   }
 
+  // Handles places - add new, update, display place or list
   handlePlaces (place) {
     // If place parameter was given
     if (place) {
@@ -197,10 +199,10 @@ class Content extends React.Component{
           updateMap={this.updateMap}
           handlePlaces={this.handlePlaces}
           />
-          {//-- Restaurant list section responsible for displaying list or single restaurant details
-          }
         </div>
 
+        {//-- Restaurant list section responsible for displaying list or single restaurant details
+        }
         <Info className="info"
           list={filteredList}
           currentPlace={this.state.currentPlace}

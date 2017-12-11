@@ -1,0 +1,114 @@
+
+/* modal */
+.modal{
+  position: absolute;
+  width: calc(100% - 80px);
+  height: auto;
+  max-height: calc(80% - 40px);
+  top: 100px;
+  left: 20px;
+  transform-origin: center;
+  padding: 20px;
+  background-color: black;
+  border: 1px solid red;
+  border-radius: 5px;
+}
+
+.modal textarea, .modal label, .modal .button{
+  display: block;
+  width: 100%;
+  padding: 0;
+}
+
+.modal label{
+  margin-bottom: 8px;
+}
+
+.modal textarea{
+  width: calc(100% - 10px);
+  padding: 5px;
+  background-color: lightgray;
+  border: 1px solid darkgrey;
+  border-radius:  3px;
+}
+
+.modal .stars{
+  width: 100%;
+  height: auto;
+  text-align: center;
+  font-size: 2em;
+  background: none;
+  overflow: hidden;
+}
+
+.modal .stars li{
+  display: inline-block;
+  padding: 10px;
+  color: gold;
+  text-shadow: 0 0 5px none;
+  cursor: pointer;
+}
+
+.modal .stars li:hover{
+  color: white;
+  text-shadow: 0 0 5px gold;
+}
+
+.modal .button{
+  min-width: 100px;
+  height: auto;
+  border: 1px solid red;
+  border-radius: 3px;
+  padding: 10px 0;
+  text-align: center;
+  cursor: pointer;
+  background-color: rgba(255,255,255,0.1)
+}
+
+.modal .button:hover{
+  background-color: rgba(255,255,255,0.2)
+}
+
+.modal .button:active{
+  background-color: rgba(255,255,255,0.05)
+}
+
+/* Controls */
+.controls{
+  min-width: 100px;
+  height: auto;
+}
+
+/* Close symbol*/
+.close {
+  display: inline-block;
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  right: 0;
+  top: 0;
+  opacity: 0.6;
+  padding: 10px;
+  cursor: pointer;
+}
+
+.close:hover {
+  opacity: 1;
+}
+
+.close:before, .close:after {
+  position: absolute;
+  top: 10px;
+  right: 17px;
+  content: ' ';
+  height: 20px;
+  width: 3px;
+  background-color: red;
+}
+
+.close:before {
+  transform: rotate(-45deg);
+}
+.close:after {
+  transform: rotate(45deg);
+}

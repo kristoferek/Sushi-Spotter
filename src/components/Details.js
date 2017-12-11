@@ -1,6 +1,6 @@
 import React from 'react';
 import {Div, Header, Modal, List, Symbol, Title} from './Elements.js';
-import ReviewForm from './ReviewForm.js';
+import {ReviewForm} from './Forms.js';
 import '../css/details.css';
 
 class Details extends React.Component{
@@ -153,7 +153,7 @@ class Details extends React.Component{
 
           <List elements={this.props.currentPlace.reviews} id='reviews' generateList={this.listReviews} />
 
-          <Modal className={this.state.displayModal ? 'modal' : 'modal hidden'} handler={this.closeModal} display={this.state.displayModal}>
+          <Modal className={this.state.displayModal ? 'modal' : 'modal hidden'} handlerClose={this.closeModal} display={this.state.displayModal}>
             <ReviewForm id='newReview' handleNewReview={this.handleNewReview} />
           </Modal>
         </Div>

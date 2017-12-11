@@ -4,3 +4,12 @@
 .infoName{
   font-weight: 600;
 }
+
+.map{
+  position: relative;
+}
+
+#map{
+  height: 100%;
+  width: 100%;
+}

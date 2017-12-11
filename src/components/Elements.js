@@ -1,4 +1,5 @@
 import React from 'react';
+import '../css/elements.css';
 
 function Header (props) {
   return <header className={props.className}> {props.children} </header>
@@ -38,8 +39,8 @@ function Modal(props) {
   if (props.display) {
     return (
       <Div className={props.className} id={props.id}>
-      <Symbol id='closeModal' className='close' handler={props.handler} alt="Close" />
-      {props.children}
+        <Symbol id='closeModal' className='close' handler={props.handlerClose} alt="Close" />
+        {props.children}
       </Div>
     );
   } else return null;
