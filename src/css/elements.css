@@ -14,22 +14,29 @@
   border-radius: 5px;
 }
 
-.modal textarea, .modal label, .modal .button{
+.modal textarea, .modal input, .modal label, .modal .button{
   display: block;
   width: 100%;
   padding: 0;
 }
 
 .modal label{
-  margin-bottom: 8px;
+  margin: 8px 0;
 }
 
-.modal textarea{
+.modal textarea, .modal input{
   width: calc(100% - 10px);
   padding: 5px;
   background-color: lightgray;
   border: 1px solid darkgrey;
   border-radius:  3px;
+}
+
+.modal .alert{
+  padding: 5px 0;
+  color: red;
+  font-size: 0.8em;
+  text-shadow: 0 0 2px rgba(255,255,255, 0.4);
 }
 
 .modal .stars{

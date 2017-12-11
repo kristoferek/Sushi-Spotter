@@ -1,6 +1,7 @@
 import React from 'react';
 import '../css/map.css';
 import sushi from '../img/sushi_icon.png';
+import sushi_gray from '../img/sushi_icon_gray.png';
 import {Modal} from './Elements.js';
 import {NewPlaceForm} from './Forms.js';
 
@@ -24,9 +25,11 @@ class Map extends React.Component{
     this.closeInfoWindow = this.closeInfoWindow.bind(this);
     this.initMap = this.initMap.bind(this);
     this.newMarker = this.newMarker.bind(this);
+
     window.initMap = this.initMap;
     this.map = undefined;
     this.markers = [];
+    this.newPlaceMarker = undefined;
   }
 
   componentDidMount(){
@@ -166,7 +169,7 @@ class Map extends React.Component{
       return true;
     });
   }
-
+  // Position map on visitor location
   geolocationMap (map) {
     // prevent "no google object" error from create-react-app parser
     const google = window.google;
@@ -191,11 +194,13 @@ class Map extends React.Component{
     }
   }
 
+  // Handle new place input
   handleNewPlace = (position) => {
     this.setNewPlacePosition(position);
     this.showModal();
   }
 
+  // Put new place data into places list
   addNewPlace = (name, address, rating) => {
     this.hideModal();
     const place = {
@@ -203,23 +208,45 @@ class Map extends React.Component{
       name: name,
       place_id: name + (Math.random() * 1000000),
       address: address,
-      rating: rating
+      rating: rating,
+      reviews: []
     }
     this.props.handlePlaces(place);
   }
 
-  showNewPlaceInfoWindow (e) {
+  // Show window and marker on new place click
+  showNewPlaceInfo (e) {
+    // set position for click event
     const position = {lat: e.latLng.lat(), lng: e.latLng.lng()};
+    // set marker parameters
+    const markerParameters = {
+      position: position,
+      title: 'Add new place',
+      icon: {
+        url: sushi_gray,
+        scaledSize: {
+          width: 50,
+          height: 50
+        }
+      },
+      map: this.map
+    };
+    // create and show marker for new place attempt
+    this.newPlaceMarker = this.newMarker (this.map, markerParameters);
+
+    // Define content of info window
     const content = document.createElement('div');
+    // set content link and listener on click
     content.innerHTML = '<a href="#">Add new place</a> <br />lat: ' + Math.floor(position.lat * 10000)/10000 + '<br />lng: ' + Math.floor(position.lng * 10000)/10000;
     content.addEventListener('click', (e) => {
+      // On click hide infoWindow and marker
       e.preventDefault();
-      console.log(e);
       this.closeInfoWindow();
+      this.newPlaceMarker.setMap(null);
+      // Handle input for new place
       this.handleNewPlace(position);
     });
     this.showInfoWindow (content, position);
-    this.infoWindow.setOptions({pixelOffset: {width:0, height:0}});
   }
 
   initMap () {
@@ -242,7 +269,7 @@ class Map extends React.Component{
     this.geolocationMap(this.map);
 
     // Add listner for adding new restaurand on click on the mapParameters
-    this.map.addListener('rightclick', (e) => this.showNewPlaceInfoWindow(e));
+    this.map.addListener('rightclick', (e) => this.showNewPlaceInfo(e));
 
 
   }

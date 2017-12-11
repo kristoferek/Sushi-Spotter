@@ -54,7 +54,7 @@ class Content extends React.Component{
       // and update state.list
       if (myList.length > 0) {
         this.setState({
-          list:  myList,
+          list:  myList
         });
         // console.log(this.state.list);
       }

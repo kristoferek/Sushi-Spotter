@@ -126,7 +126,7 @@ class Details extends React.Component{
 
   render () {
     const NOCONTENT = 'No sushi restaurant found!'
-
+    // If currenPlace defined display details
     if (this.props.currentPlace){
 
       return (
@@ -145,7 +145,7 @@ class Details extends React.Component{
 
             <Div className='controls'>
               <Symbol className='add' handler={this.openModal} alt="Add review"></Symbol>
-              <Symbol className='back' handler={this.props.handlePlaces} alt="Go back"></Symbol>
+              <Symbol className='back' handler={(e) => this.props.handlePlaces()} alt="Go back"></Symbol>
             </Div>
           </Header>
 
@@ -159,6 +159,7 @@ class Details extends React.Component{
         </Div>
       );
     } else {
+      // If no currenPlace defined display no content warning
       return (
         <Div id={this.props.id} className={this.props.className}>
           {NOCONTENT}

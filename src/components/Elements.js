@@ -6,7 +6,7 @@ function Header (props) {
 }
 
 function Symbol (props) {
-    return <div className={props.className} id={props.id} onClick={(e)=>props.handler()} title={props.alt}>{props.children}</div>;
+  return <div className={props.className} id={props.id} onClick={props.handler} title={props.alt}>{props.children}</div>;
 }
 
 function Title (props) {

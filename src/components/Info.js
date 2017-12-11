@@ -7,10 +7,10 @@ function Info (props){
   if (props.currentPlace !== undefined){
     return (
       <Details id='details'
-        className={props.className +' details'}
-        currentPlace={props.currentPlace}  handlePlaces={props.handlePlaces}
-        map={props.map}
-      />
+        className={props.className + ' details'}
+        currentPlace={props.currentPlace}
+        handlePlaces={props.handlePlaces}
+        map={props.map} />
     );
   // If currentPlace not defined display places list with filter
   } else {
@@ -19,8 +19,7 @@ function Info (props){
         list={props.list}
         handlePlaces={props.handlePlaces}
         filter={props.filter}
-        updateFilter={props.updateFilter}
-      />
+        updateFilter={props.updateFilter} />
     );
   }
 }
