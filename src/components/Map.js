@@ -1,8 +1,10 @@
 import React from 'react';
 import '../css/map.css';
-import sushi from '../img/sushi_icon.png';
-import sushi_gray from '../img/sushi_icon_gray.png';
-import {Modal} from './Elements.js';
+import sushi from '../img/sushi.svg';
+import new_sushi from '../img/new_sushi.svg';
+import here from '../img/here.svg';
+import importedMapStyle from './mapstyle.json'
+import {Header, Modal, Symbol} from './Elements.js';
 import {NewPlaceForm} from './Forms.js';
 
 class Map extends React.Component{
@@ -10,13 +12,6 @@ class Map extends React.Component{
     super(props);
     this.state = {
       APIKey: 'AIzaSyCmX-3F5SG5M8xs3OLWjyIjEZrDHt-9bo0',
-      mapParameters: {
-        center: {
-          lat: 52.2351118,
-          lng: 21.0352136
-        },
-        zoom: 14
-      },
       displayModal: false,
       newPlacePosition: undefined
     };
@@ -28,8 +23,14 @@ class Map extends React.Component{
 
     window.initMap = this.initMap;
     this.map = undefined;
+    // markers array
     this.markers = [];
+    // Visitor's position marker
+    this.myMarker = undefined;
+    // new place marker
     this.newPlaceMarker = undefined;
+    // Info window for markers
+    this.infoWindow = undefined;
   }
 
   componentDidMount(){
@@ -64,11 +65,27 @@ class Map extends React.Component{
     })
   }
 
+  // Hides marker
+  hideMarker = (marker) => {
+    marker.setVisible(false);
+  }
+
+  // Show marker on map
+  showMarker = (marker) => {
+    marker.setVisible(true);
+  }
+
   // Set new place position
   setNewPlacePosition = (val) => {
     this.setState({
       newPlacePosition: val
     })
+  }
+
+  removeGoogleListener = (eventListener) => {
+    // prevent "no google object" error from create-react-app parser
+    const google = window.google;
+    google.maps.event.removeListener(eventListener);
   }
 
   // Inject src script into index.html
@@ -80,6 +97,7 @@ class Map extends React.Component{
     ref.parentNode.insertBefore(script, ref);
   }
 
+  // Define clickable content fo Info Window
   placeInfoWindowContent (place, handler) {
     // Set content for info window
     const contentInfo = document.createElement('div');
@@ -91,6 +109,24 @@ class Map extends React.Component{
 
     return contentInfo;
   }
+
+  newPlaceinfoWindowContent (position) {
+    // Define content of info window
+    const content = document.createElement('div');
+    // set content link and listener on click
+    content.innerHTML = '<a href="#">Add new place</a> <br />lat: ' + Math.floor(position.lat * 10000)/10000 + '<br />lng: ' + Math.floor(position.lng * 10000)/10000;
+    content.addEventListener('click', (e) => {
+      e.preventDefault();
+      // On click hide infoWindow and marker
+      this.closeInfoWindow();
+      this.hideMarker(this.newPlaceMarker);
+      // Handle input for new place
+      this.handleNewPlace(position);
+    });
+
+    return content;
+  }
+
   // Shows info window with event click listener displaying place info
   showInfoWindow (content, position) {
     // Update content of infoWindow
@@ -102,8 +138,8 @@ class Map extends React.Component{
   }
 
   // Close info window
-  closeInfoWindow (content, position) {
-    this.infoWindow.close();
+  closeInfoWindow () {
+    if (this.infoWindow) this.infoWindow.close();
   }
 
   newMarker (map, parameters, ...eventHandlingObjects) {
@@ -120,11 +156,52 @@ class Map extends React.Component{
     return newMarker
   }
 
+  // Initializes visitors position marker
+  setMyMarker = (position) => {
+    // set marker parameters
+    const markerParameters = {
+      position: position,
+      title: 'You are here',
+      background: 'red',
+      map: this.map,
+      icon: {
+        url: here,
+        scaledSize: {
+          width: 32,
+          height: 32
+        }
+      }
+    };
+    // create and show marker for visitor's position
+    this.myMarker = this.newMarker (this.map, markerParameters);
+  }
+
+  // Initializes new place marker
+  setNewPlaceMarker = (position) => {
+    // set marker parameters
+    const markerParameters = {
+      position: position,
+      title: 'Add new place',
+      icon: {
+        url: new_sushi,
+        scaledSize: {
+          width: 50,
+          height: 50
+        }
+      },
+      map: this.map
+    };
+    // create and show marker for new place attempt
+    this.newPlaceMarker = this.newMarker (this.map, markerParameters);
+  }
+
+  updateNewPlaceMarker = (position) => {
+    this.newPlaceMarker.setPosition(position);
+  }
+
   // Create and add markers to map
   generateMarkers (places, map, infoWindow) {
-
     if (!map) return console.log('Google maps hasn\'t intialize yet, be patient... Thank You!');
-
     // Initialize and purge marker array
     this.markers.map((marker) => marker.setMap(null));
     this.markers = [];
@@ -169,11 +246,9 @@ class Map extends React.Component{
       return true;
     });
   }
+
   // Position map on visitor location
   geolocationMap (map) {
-    // prevent "no google object" error from create-react-app parser
-    const google = window.google;
-
     // Use visitor geolocation if browser suppoerts it
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition((position) => {
@@ -181,15 +256,12 @@ class Map extends React.Component{
           lat: position.coords.latitude,
           lng: position.coords.longitude
         };
-        const markerParameters = {
-          position: pos,
-          label: '\u2605',
-          background: 'red',
-        };
 
         map.setCenter(pos);
-        let myMarker = new google.maps.Marker(markerParameters);
-        myMarker.setMap(map);
+
+        this.setMyMarker (pos);
+        this.setNewPlaceMarker (pos);
+        this.hideMarker(this.newPlaceMarker);
       });
     }
   }
@@ -218,43 +290,46 @@ class Map extends React.Component{
   showNewPlaceInfo (e) {
     // set position for click event
     const position = {lat: e.latLng.lat(), lng: e.latLng.lng()};
-    // set marker parameters
-    const markerParameters = {
-      position: position,
-      title: 'Add new place',
-      icon: {
-        url: sushi_gray,
-        scaledSize: {
-          width: 50,
-          height: 50
-        }
-      },
-      map: this.map
-    };
-    // create and show marker for new place attempt
-    this.newPlaceMarker = this.newMarker (this.map, markerParameters);
 
-    // Define content of info window
-    const content = document.createElement('div');
-    // set content link and listener on click
-    content.innerHTML = '<a href="#">Add new place</a> <br />lat: ' + Math.floor(position.lat * 10000)/10000 + '<br />lng: ' + Math.floor(position.lng * 10000)/10000;
-    content.addEventListener('click', (e) => {
-      // On click hide infoWindow and marker
-      e.preventDefault();
-      this.closeInfoWindow();
-      this.newPlaceMarker.setMap(null);
-      // Handle input for new place
-      this.handleNewPlace(position);
+    // Show newPlaceMarker inn new position
+    this.updateNewPlaceMarker(position);
+    this.showMarker(this.newPlaceMarker);
+
+    // Create and show info window
+    this.showInfoWindow (this.newPlaceinfoWindowContent(position), position);
+    // Add listener to remove new place marker while info window closes
+    const closeClick = this.infoWindow.addListener('closeclick', (e) => {
+      this.hideMarker(this.newPlaceMarker);
+      this.removeGoogleListener(closeClick);
     });
-    this.showInfoWindow (content, position);
   }
 
   initMap () {
     // prevent "no google object" error from create-react-app parser
     const google = window.google;
 
+    const mapParameters = {
+      zoomControl: false,
+      streetViewControl: false,
+      scaleControl: true,
+      mapTypeControl: false,
+      center: {
+        lat: 52.2351118,
+        lng: 21.0352136
+      },
+      zoom: 14,
+      mapTypeControlOptions: {
+        mapTypeIds: ['roadmap', 'darkMap']
+        }
+    }
+
     // Initialize google map in HTML element with ref='map'
-    this.map = new google.maps.Map(this.refs.map, this.state.mapParameters);
+    this.map = new google.maps.Map(this.refs.map, mapParameters);
+
+    // Style Map
+    const newMapStyle = new google.maps.StyledMapType(importedMapStyle);
+    this.map.mapTypes.set('darkMap', newMapStyle);
+    this.map.setMapTypeId('darkMap');
 
     //Update parent component Content state.map reference
     this.props.updateMap(this.map);
@@ -267,11 +342,6 @@ class Map extends React.Component{
 
     // Center map and show user
     this.geolocationMap(this.map);
-
-    // Add listner for adding new restaurand on click on the mapParameters
-    this.map.addListener('rightclick', (e) => this.showNewPlaceInfo(e));
-
-
   }
 
   // initSearch(map) {
@@ -317,14 +387,38 @@ class Map extends React.Component{
   // }
 
   render () {
+    let modalNewPlace = null;
+    let addNewPlaceSymbol = null;
+    let newPlaceClickListener = null;
+    if (!this.props.displayPlace)
+      addNewPlaceSymbol = <Symbol className="plus" id="plus" handler={() =>
+        // Add listner for adding new restaurant on click on the map
+        newPlaceClickListener = this.map.addListener('click', (e) => {
+          // Remove listner for adding new restaurant on click on the map
+          this.removeGoogleListener(newPlaceClickListener);
+          this.showNewPlaceInfo(e);
+        })
+      }
+      alt="Add new such restaurant" />
+    else
+      addNewPlaceSymbol = null;
+    if (this.state.displayModal) modalNewPlace = (
+      <Modal className='modal' handlerClose={this.hideModal} display={this.state.displayModal}>
+        <NewPlaceForm id='newPlace' handler={this.addNewPlace} />
+      </Modal>)
+    else
+      modalNewPlace = null;
+
     return (
       <div className={this.props.className}>
+        <Header className="header">
+          <h1>Sushi <br />Spotter</h1>
+          {addNewPlaceSymbol}
+        </Header>
         <div id="map" ref="map">
           Loading Google Map...
         </div>
-        <Modal className={this.state.displayModal ? 'modal' : 'modal hidden'} handlerClose={this.hideModal} display={this.state.displayModal}>
-          <NewPlaceForm id='newPlace' handler={this.addNewPlace} />
-        </Modal>
+        {modalNewPlace}
       </div>
     );
   };

@@ -7,44 +7,11 @@
   flex-wrap: wrap;
 }
 
-.content + *{
+.content .main, .content .info{
   width: 100%;
-  height: auto;
+  height: 60vh;
   min-width: 320px;
   align-self: flex-start;
-}
-
-.content .main{
-  width: 100%;
-  height: calc(30vh);
-}
-
-.content .header{
-  width: 100%;
-  min-height: 90px;
-  height: auto;
-}
-
-.content .header h1{
-  margin: 0;
-  padding: 14px 20px 10px 100px;
-  line-height: 32px;
-  font-size: 32;
-  font-weight: 300;
-  text-transform: uppercase;
-  position: relative;
-}
-
-.content .header h1::before{
-  position: absolute;
-  content: '';
-  width: 90px;
-  height: 90px;
-  left: 10px;
-  top: 10px;
-  background-image: url('./../img/sushi-with-sticks.png');
-  background-size: 70px;
-  background-repeat: no-repeat;
 }
 
 @media (min-width: 800px) {
@@ -56,9 +23,7 @@
       min-width: 480px;
       height: 100%;
     }
-    .content .map{
-      height: calc(100% - 90px);
-    }
+
     .content .info{
       width: 40%;
       min-width: 320px;

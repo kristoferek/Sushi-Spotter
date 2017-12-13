@@ -1,5 +1,4 @@
 import React from 'react';
-import {Header} from './Elements.js';
 import Map from './Map.js';
 import Info from './Info.js';
 import '../css/content.css';
@@ -32,7 +31,6 @@ class Content extends React.Component{
     this.updateFilter = this.updateFilter.bind(this);
     this.handlePlaces = this.handlePlaces.bind(this);
     this.updateMap = this.updateMap.bind(this);
-    // this.handleNewPlace = this.handleNewPlace.bind(this);
   }
 
   componentWillMount() {
@@ -189,15 +187,13 @@ class Content extends React.Component{
       <div className={this.props.className}>
 
         <div className="main">
-          <Header className="header">
-            <h1>Sushi <br />Spotter</h1>
-          </Header>
           {//-- Map section responsible for Google Map API and Google Places API
           }
           <Map className="map"
           list={filteredList}
           updateMap={this.updateMap}
           handlePlaces={this.handlePlaces}
+          displayPlace={this.state.displayPlace}
           />
         </div>
 

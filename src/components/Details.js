@@ -100,18 +100,21 @@ class Details extends React.Component{
     }
   };
 
+  // Set state displayModal to true
   openModal = () => {
     this.setState({
       displayModal: true
     })
   };
 
+  // Set state displayModal to false
   closeModal = () => {
     this.setState({
       displayModal: false
     })
   };
 
+  // Combines new rewiev with place data and pushes them into users list
   handleNewReview = (reviewTextValue, reviewRatingValue) => {
     this.closeModal();
     let newReview = {

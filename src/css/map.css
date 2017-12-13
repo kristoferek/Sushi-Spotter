@@ -7,9 +7,40 @@
 
 .map{
   position: relative;
+  width: 100%;
+  height: calc(100% - 90px);
 }
 
 #map{
   height: 100%;
   width: 100%;
+}
+
+.map .header{
+  width: 100%;
+  min-height: 90px;
+  height: auto;
+  position: relative;
+}
+
+.map .header h1{
+  margin: 0;
+  padding: 14px 20px 10px 100px;
+  line-height: 32px;
+  font-size: 32;
+  font-weight: 300;
+  text-transform: uppercase;
+  position: relative;
+}
+
+.map .header h1::before{
+  position: absolute;
+  content: '';
+  width: 90px;
+  height: 90px;
+  left: 10px;
+  top: 10px;
+  background-image: url('./../img/sushi-with-sticks.png');
+  background-size: 70px;
+  background-repeat: no-repeat;
 }
