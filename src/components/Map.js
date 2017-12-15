@@ -15,20 +15,21 @@ class Map extends React.Component{
       displayModal: false,
       newPlacePosition: undefined
     };
+    this.newMarker = this.newMarker.bind(this);
     this.generateMarkers = this.generateMarkers.bind(this);
     this.showInfoWindow = this.showInfoWindow.bind(this);
     this.closeInfoWindow = this.closeInfoWindow.bind(this);
     this.initMap = this.initMap.bind(this);
-    this.newMarker = this.newMarker.bind(this);
 
     window.initMap = this.initMap;
+    // empty map reference
     this.map = undefined;
-    // markers array
-    this.markers = [];
     // Visitor's position marker
     this.myMarker = undefined;
     // new place marker
     this.newPlaceMarker = undefined;
+    // markers array
+    this.markers = [];
     // Info window for markers
     this.infoWindow = undefined;
   }
@@ -49,6 +50,15 @@ class Map extends React.Component{
     // Create and display markers if Content.state.list updates
     if (refreshMarkers)
     this.generateMarkers(nextProps.list, this.map, this.infoWindow);
+  }
+
+  // Inject src script into index.html
+  loadJS (src) {
+    let ref = window.document.getElementsByTagName("script")[0];
+    let script = window.document.createElement("script");
+    script.src = src;
+    script.async = true;
+    ref.parentNode.insertBefore(script, ref);
   }
 
   // Hide Modal with form Add New Place
@@ -86,15 +96,6 @@ class Map extends React.Component{
     // prevent "no google object" error from create-react-app parser
     const google = window.google;
     google.maps.event.removeListener(eventListener);
-  }
-
-  // Inject src script into index.html
-  loadJS (src) {
-    let ref = window.document.getElementsByTagName("script")[0];
-    let script = window.document.createElement("script");
-    script.src = src;
-    script.async = true;
-    ref.parentNode.insertBefore(script, ref);
   }
 
   // Define clickable content fo Info Window
@@ -361,7 +362,7 @@ class Map extends React.Component{
     const searchRequest = {
       location: position,
       service: 'restaurant',
-      radius: '2000',
+      radius: '1000',
       name: 'sushi'
     }
 
@@ -380,7 +381,7 @@ class Map extends React.Component{
         }
         return place;
       });
-      var json = JSON.stringify(list);
+      // var json = JSON.stringify(list);
       console.log(list);
       return list;
     });

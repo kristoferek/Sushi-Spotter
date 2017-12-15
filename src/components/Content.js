@@ -71,34 +71,61 @@ class Content extends React.Component{
   }
 
   // Handles places - add new, update, display place or list
-  handlePlaces (place) {
-    // If place parameter was given
-    if (place) {
+  // - arg is undefined       - set state.displayPlace to false (display places list)
+  // - arg is an place object - add or update place in the list
+  //                          - set state.displayPlace to true (display current place)
+  // - arg is places array    - add or update every place from array in the list
+  //                          - set state.displayPlace to flse (display places list)
+  handlePlaces (arg) {
+    // If arg was defined
+    if (arg) {
+      // make copy of actual places array
       let array = this.state.list.slice();
+      // initialize new places array
+      let places = [];
+      // depending on arg type create new places array
+      if (Array.isArray(arg))
+        places = arg.slice()
+      else places = [arg];
+
       let index = undefined;
-      // Check if place is in list of places, if so store its index
-      let existsInList = array.some((element, i) => {
-        if (place.place_id === element.place_id) {
-          index = i;
-          return true;
+      // For every element of new places arrayarray check if exist in actual places array
+      // If not push this element to actual places array
+      places.map((place) => {
+        let existsInList = array.some((element, i) => {
+          // Check if place is in list of places, if so store its index
+          if (place.place_id === element.place_id) {
+            index = i;
+            return true;
+          }
+          return false;
+        });
+
+        // If place is in actual places array
+        if (existsInList) {
+          // UPDATE this element
+          array[index] = place;
+          // update list, set currentPlace to place and set state.displayPlace to true
+          this.setState({
+            list: array,
+            currentPlace: place,
+            displayPlace: true
+          });
         }
-        return false;
-      });
-
-      // If place is in list of places UPDATE list element
-      if (existsInList) array[index] = place
-      // If place isn't in list ADD element to the list
-      else array.push(place);
-
-      // Update list, current place and set display state to true
-      this.setState({
-        list: array,
-        currentPlace: place,
-        displayPlace: true
+        // If place isn't in actual places array ADD it to the list
+        else {
+          array.push(place);
+          this.setState({
+            list: array,
+            currentPlace: undefined,
+            displayPlace: false
+          });
+        }
+        return undefined;
       });
     // If there was no function parameter given
     } else {
-      // Empty current place and set display state to false
+      // Empty current place and set state.displayPlace to false
       this.setState({
         currentPlace: undefined,
         displayPlace: false
