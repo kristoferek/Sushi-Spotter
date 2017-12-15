@@ -247,25 +247,6 @@ class Map extends React.Component{
     });
   }
 
-  // Position map on visitor location
-  geolocationMap (map) {
-    // Use visitor geolocation if browser suppoerts it
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition((position) => {
-        const pos = {
-          lat: position.coords.latitude,
-          lng: position.coords.longitude
-        };
-
-        map.setCenter(pos);
-
-        this.setMyMarker (pos);
-        this.setNewPlaceMarker (pos);
-        this.hideMarker(this.newPlaceMarker);
-      });
-    }
-  }
-
   // Handle new place input
   handleNewPlace = (position) => {
     this.setNewPlacePosition(position);
@@ -304,6 +285,32 @@ class Map extends React.Component{
     });
   }
 
+  // Position map on visitor location
+  geolocationMap (map) {
+    // Use visitor geolocation if browser suppoerts it
+    if (navigator.geolocation) {
+      const result = navigator.geolocation.getCurrentPosition((position) => {
+        const pos = {
+          lat: position.coords.latitude,
+          lng: position.coords.longitude
+        };
+
+        map.setCenter(pos);
+
+        this.setMyMarker (pos);
+        this.setNewPlaceMarker (pos);
+        this.hideMarker(this.newPlaceMarker);
+        console.log(pos);
+
+        this.initSearch(map, pos);
+        return pos;
+      });
+      return result;
+    }
+    return undefined;
+  }
+
+
   initMap () {
     // prevent "no google object" error from create-react-app parser
     const google = window.google;
@@ -338,49 +345,49 @@ class Map extends React.Component{
     this.infoWindow = new google.maps.InfoWindow();
 
     // Create markers
-    this.generateMarkers(this.props.list, this.map, this.infoWindow);
+    const currentPosition = this.generateMarkers(this.props.list, this.map, this.infoWindow);
 
     // Center map and show user
-    this.geolocationMap(this.map);
+    this.geolocationMap(this.map, currentPosition);
   }
 
-  // initSearch(map) {
-  //   // prevent "no google object" error from create-react-app parser
-  //   const google = window.google;
-  //
-  //   // Search Google Places by given parameters and call to callback function storePLaces()
-  //
-  //   const searchRequest = {
-  //     location: this.state.mapParameters.center,
-  //     service: 'restaurant',
-  //     radius: '1000',
-  //     name: 'sushi'
-  //   }
-  //
-  //   let service = new google.maps.places.PlacesService(map);
-  //   let myList = service.nearbySearch(searchRequest, function(response){
-  //     const list = response.map((el)=>{
-  //       const place = {
-  //         location: {
-  //           lat: el.geometry.location.lat(),
-  //           lng: el.geometry.location.lng()
-  //         },
-  //         name: el.name,
-  //         place_id: el.place_id,
-  //         rating: el.rating,
-  //         address: el.vicinity
-  //       }
-  //       return place;
-  //     });
-  //     // var json = JSON.stringify(list);
-  //     return list;
-  //   });
-  //   console.log(myList);
-  // }
+  // Get search results for sushi in nearby location
+  initSearch(map, position) {
+    // prevent "no google object" error from create-react-app parser
+    const google = window.google;
 
+    // Search Google Places by given parameters and call to callback function storePLaces()
 
+    const searchRequest = {
+      location: position,
+      service: 'restaurant',
+      radius: '2000',
+      name: 'sushi'
+    }
 
-  // Add place to list
+    let service = new google.maps.places.PlacesService(map);
+    let myList = service.nearbySearch(searchRequest, function(response){
+      const list = response.map((el)=>{
+        const place = {
+          location: {
+            lat: el.geometry.location.lat(),
+            lng: el.geometry.location.lng()
+          },
+          name: el.name,
+          place_id: el.place_id,
+          rating: el.rating,
+          address: el.vicinity
+        }
+        return place;
+      });
+      var json = JSON.stringify(list);
+      console.log(list);
+      return list;
+    });
+    console.log('myList', myList);
+  }
+
+  // // Add place to list
   // handlePlaceDetails(result, status){
   //   var lastListElement = this.props.handleNewPlace(result);
   //   this.createMarker(lastListElement.location, this.map);
