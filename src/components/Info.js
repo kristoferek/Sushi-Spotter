@@ -4,7 +4,7 @@ import Listing from './Listing.js';
 
 function Info (props){
   // If currentPlace defined display its details
-  if (props.currentPlace !== undefined){
+  if (props.displayPlace){
     return (
       <Details id='details'
         className={props.className + ' details'}

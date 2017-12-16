@@ -81,48 +81,65 @@ class Content extends React.Component{
     if (arg) {
       // make copy of actual places array
       let array = this.state.list.slice();
-      // initialize new places array
-      let places = [];
-      // depending on arg type create new places array
-      if (Array.isArray(arg))
-        places = arg.slice()
-      else places = [arg];
-
+      // status of function arg
+      const argIsArray = Array.isArray(arg);
       let index = undefined;
-      // For every element of new places arrayarray check if exist in actual places array
-      // If not push this element to actual places array
-      places.map((place) => {
-        let existsInList = array.some((element, i) => {
+
+      // Depending on arg type create new or update places array
+      // If arg is an array
+      if (argIsArray) {
+        // initialize new places array
+        let places = arg.slice();
+        // For every element of new places array check if it exist
+        // in actual places array, then ADD or UPDATE it
+        places.map((place) => {
           // Check if place is in list of places, if so store its index
-          if (place.place_id === element.place_id) {
+          let existsInList = array.some((element, i) => {
+            if (place.place_id === element.place_id) {
+              index = i;
+              return true;
+            }
+            return false;
+          });
+          // If place is in actual places array
+          // UPDATE this element
+          // if not ADD this element
+          if (existsInList) array[index] = place
+          else array.push(place);
+          
+          return undefined;
+        });
+        // update list, empty currentPlace and set displayPlace to false
+        this.setState({
+          list: array,
+          currentPlace: undefined,
+          displayPlace: false
+        });
+        return undefined;
+
+      // If arg is a place object
+      } else {
+        // Check if place is in list of places, if so store its index
+        let existsInList = array.some((element, i) => {
+          if (arg.place_id === element.place_id) {
             index = i;
             return true;
           }
           return false;
         });
-
         // If place is in actual places array
-        if (existsInList) {
-          // UPDATE this element
-          array[index] = place;
-          // update list, set currentPlace to place and set state.displayPlace to true
-          this.setState({
-            list: array,
-            currentPlace: place,
-            displayPlace: true
-          });
-        }
-        // If place isn't in actual places array ADD it to the list
-        else {
-          array.push(place);
-          this.setState({
-            list: array,
-            currentPlace: undefined,
-            displayPlace: false
-          });
-        }
-        return undefined;
-      });
+        // UPDATE this element
+        // if not ADD this element
+        if (existsInList) array[index] = arg
+        else array.push(arg);
+        // Update list, update currentPlace with place and set displayPlace to true
+        this.setState({
+          list: array,
+          currentPlace: arg,
+          displayPlace: true
+        });
+      }
+
     // If there was no function parameter given
     } else {
       // Empty current place and set state.displayPlace to false
@@ -221,6 +238,7 @@ class Content extends React.Component{
           updateMap={this.updateMap}
           handlePlaces={this.handlePlaces}
           displayPlace={this.state.displayPlace}
+          currentPlace={this.state.currentPlace}
           />
         </div>
 
@@ -228,6 +246,7 @@ class Content extends React.Component{
         }
         <Info className="info"
           list={filteredList}
+          displayPlace={this.state.displayPlace}
           currentPlace={this.state.currentPlace}
           handlePlaces={this.handlePlaces}
           filter={this.state.filter}

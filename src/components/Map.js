@@ -50,6 +50,11 @@ class Map extends React.Component{
     // Create and display markers if Content.state.list updates
     if (refreshMarkers)
     this.generateMarkers(nextProps.list, this.map, this.infoWindow);
+
+    // Center map on currentPlace
+    if (nextProps.currentPlace)
+    // console.log(nextProps.currentPlace);
+    this.map.setCenter(nextProps.currentPlace.location);
   }
 
   // Inject src script into index.html
@@ -301,9 +306,7 @@ class Map extends React.Component{
         this.setMyMarker (pos);
         this.setNewPlaceMarker (pos);
         this.hideMarker(this.newPlaceMarker);
-        console.log(pos);
 
-        this.initSearch(map, pos);
         return pos;
       });
       return result;
@@ -353,22 +356,21 @@ class Map extends React.Component{
   }
 
   // Get search results for sushi in nearby location
-  initSearch(map, position) {
+  sushiSearch(map) {
     // prevent "no google object" error from create-react-app parser
     const google = window.google;
 
     // Search Google Places by given parameters and call to callback function storePLaces()
 
     const searchRequest = {
-      location: position,
-      service: 'restaurant',
-      radius: '1000',
-      name: 'sushi'
+      bounds: map.getBounds(),
+      name: 'sushi',
+      type: 'restaurant'
     }
 
     let service = new google.maps.places.PlacesService(map);
-    let myList = service.nearbySearch(searchRequest, function(response){
-      const list = response.map((el)=>{
+    let myList = service.nearbySearch(searchRequest, (response) => {
+      const list = response.map((el) => {
         const place = {
           location: {
             lat: el.geometry.location.lat(),
@@ -381,11 +383,9 @@ class Map extends React.Component{
         }
         return place;
       });
-      // var json = JSON.stringify(list);
-      console.log(list);
-      return list;
+      this.props.handlePlaces(list);
+      return myList;
     });
-    console.log('myList', myList);
   }
 
   // // Add place to list
@@ -397,8 +397,10 @@ class Map extends React.Component{
   render () {
     let modalNewPlace = null;
     let addNewPlaceSymbol = null;
+    let refreshSymbol = null;
     let newPlaceClickListener = null;
-    if (!this.props.displayPlace)
+
+    if (!this.props.displayPlace && this.map) {
       addNewPlaceSymbol = <Symbol className="plus" id="plus" handler={() =>
         // Add listner for adding new restaurant on click on the map
         newPlaceClickListener = this.map.addListener('click', (e) => {
@@ -407,9 +409,16 @@ class Map extends React.Component{
           this.showNewPlaceInfo(e);
         })
       }
-      alt="Add new such restaurant" />
+      alt="Add new such restaurant" />;
+      refreshSymbol = <Symbol className="refresh" id="refresh" handler={() => {
+        // Search nearby and update places list
+        this.sushiSearch(this.map);
+      }}
+      alt="Google search in this area" />;
+    }
     else
       addNewPlaceSymbol = null;
+
     if (this.state.displayModal) modalNewPlace = (
       <Modal className='modal' handlerClose={this.hideModal} display={this.state.displayModal}>
         <NewPlaceForm id='newPlace' handler={this.addNewPlace} />
@@ -421,6 +430,7 @@ class Map extends React.Component{
       <div className={this.props.className}>
         <Header className="header">
           <h1>Sushi <br />Spotter</h1>
+          {refreshSymbol}
           {addNewPlaceSymbol}
         </Header>
         <div id="map" ref="map">
