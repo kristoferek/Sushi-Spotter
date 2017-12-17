@@ -52,9 +52,11 @@ class Map extends React.Component{
     this.generateMarkers(nextProps.list, this.map, this.infoWindow);
 
     // Center map on currentPlace
-    if (nextProps.currentPlace)
-    // console.log(nextProps.currentPlace);
-    this.map.setCenter(nextProps.currentPlace.location);
+    if (nextProps.currentPlace){
+      // console.log(nextProps.currentPlace);
+      this.map.setCenter(nextProps.currentPlace.location);
+      this.showPlaceInfo(nextProps.currentPlace);
+    }
   }
 
   // Inject src script into index.html
@@ -271,6 +273,15 @@ class Map extends React.Component{
       reviews: []
     }
     this.props.handlePlaces(place);
+  }
+
+  // Show window and marker on new place click
+  showPlaceInfo (place) {
+    // set position for click event
+    const position = place.location;
+
+    // Create and show info window
+    this.showInfoWindow (this.placeInfoWindowContent(place, () => this.props.handlePlaces(place)), position);
   }
 
   // Show window and marker on new place click

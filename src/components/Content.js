@@ -132,12 +132,12 @@ class Content extends React.Component{
           // UPDATE this element
           array[index] = arg;
           // Update actual rating
-          if (arg.reviews) {
+          if (arg.reviews) if (arg.reviews.length > 0) {
             let sum = 0;
             for (var i = 0; i < arg.reviews.length; i++) {
               sum += arg.reviews[i].rating;
             }
-            array[index].rating = sum / arg.reviews.length;
+            array[index].rating = (sum / arg.reviews.length).toFixed(1);
           }
         }
         // if not ADD this element

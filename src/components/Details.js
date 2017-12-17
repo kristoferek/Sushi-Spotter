@@ -152,7 +152,7 @@ class Details extends React.Component{
               </Title>
               <address>{this.props.currentPlace.address}</address>
               <Div className="rating">
-                {`Rating: ${this.props.currentPlace.rating}\u2605`}
+                {`Rating: ${this.props.currentPlace.rating || 'No rating yet...'}\u2605`}
               </Div>
             </Div>
 
