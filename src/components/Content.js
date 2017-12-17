@@ -106,7 +106,7 @@ class Content extends React.Component{
           // if not ADD this element
           if (existsInList) array[index] = place
           else array.push(place);
-          
+
           return undefined;
         });
         // update list, empty currentPlace and set displayPlace to false
@@ -128,9 +128,19 @@ class Content extends React.Component{
           return false;
         });
         // If place is in actual places array
-        // UPDATE this element
+        if (existsInList) {
+          // UPDATE this element
+          array[index] = arg;
+          // Update actual rating
+          if (arg.reviews) {
+            let sum = 0;
+            for (var i = 0; i < arg.reviews.length; i++) {
+              sum += arg.reviews[i].rating;
+            }
+            array[index].rating = sum / arg.reviews.length;
+          }
+        }
         // if not ADD this element
-        if (existsInList) array[index] = arg
         else array.push(arg);
         // Update list, update currentPlace with place and set displayPlace to true
         this.setState({

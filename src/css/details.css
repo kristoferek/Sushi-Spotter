@@ -36,9 +36,11 @@
   height: 60vh;
 }
 
-#reviews ul, #photos ul{
+#reviews ul{
   height: 100%;
   padding: 0;
+  background-color: rgba(200,200,200,0.1);
+  list-style-type: none;
 }
 
 #reviews ul li{
@@ -49,7 +51,7 @@
   border-bottom: 1px solid black;
 }
 
-#reviews ul li span{
+#reviews ul li .rating{
   padding: 0 5px 0 0;
   color: gold;
 }
@@ -57,5 +59,9 @@
 @media (min-width: 800px) {
   #reviews, #photos{
     height: calc((100% - 90px) / 2);
+  }
+  #reviews ul {
+    overflow-y: scroll;
+    overflow-x: hidden;
   }
 }

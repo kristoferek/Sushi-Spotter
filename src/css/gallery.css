@@ -1,0 +1,63 @@
+@keyframes appear {
+  0%   {opacity: 0.4;}
+  100% {opacity: 1;}
+}
+
+.gallery{
+  position: relative;
+  height: 100%;
+  width: 100%;
+  animation: appear 2s;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center center;
+  transition: opacity 1s ease;
+}
+
+.bigArrow {
+  position: absolute;
+  width: 25px;
+  height: 100%;
+  opacity: 0.4;
+  /* padding: 10px; */
+  cursor: pointer;
+  background-color: rgba(255,255,255,0.2);
+}
+
+.bigArrow:hover {
+  opacity: 1;
+  animation: appear 0.5s;
+}
+
+#next.bigArrow{
+  right:0;
+}
+
+#next.bigArrow::before, #next.bigArrow::after, #previous.bigArrow::before, #previous.bigArrow::after{
+  position: absolute;
+  width: 3px;
+  height: calc(100%  / 6);
+  background-color: red;
+  right: 10px;
+  content: '';
+}
+
+#next.bigArrow::before {
+  transform: skewX(15deg);
+  top: calc(100% / 3);
+}
+
+#next.bigArrow::after {
+  transform: skewX(-15deg);
+  bottom: calc(100% / 3);
+}
+
+#previous.bigArrow::after {
+  transform: skewX(-15deg);
+  top: calc(100% / 3);
+}
+
+#previous.bigArrow::before {
+  transform: skewX(15deg);
+  bottom: calc(100% / 3);
+}
