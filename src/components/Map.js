@@ -54,7 +54,7 @@ class Map extends React.Component{
     // Center map on currentPlace
     if (nextProps.currentPlace){
       // console.log(nextProps.currentPlace);
-      this.map.setCenter(nextProps.currentPlace.location);
+      this.map.panTo(nextProps.currentPlace.location);
       this.showPlaceInfo(nextProps.currentPlace);
     }
   }
@@ -99,12 +99,6 @@ class Map extends React.Component{
     })
   }
 
-  removeGoogleListener = (eventListener) => {
-    // prevent "no google object" error from create-react-app parser
-    const google = window.google;
-    google.maps.event.removeListener(eventListener);
-  }
-
   // Define clickable content fo Info Window
   placeInfoWindowContent (place, handler) {
     // Set content for info window
@@ -116,23 +110,6 @@ class Map extends React.Component{
     contentInfo.addEventListener('click', handler);
 
     return contentInfo;
-  }
-
-  newPlaceinfoWindowContent (position) {
-    // Define content of info window
-    const content = document.createElement('div');
-    // set content link and listener on click
-    content.innerHTML = '<a href="#">Add new place</a> <br />lat: ' + Math.floor(position.lat * 10000)/10000 + '<br />lng: ' + Math.floor(position.lng * 10000)/10000;
-    content.addEventListener('click', (e) => {
-      e.preventDefault();
-      // On click hide infoWindow and marker
-      this.closeInfoWindow();
-      this.hideMarker(this.newPlaceMarker);
-      // Handle input for new place
-      this.handleNewPlace(position);
-    });
-
-    return content;
   }
 
   // Shows info window with event click listener displaying place info
@@ -148,6 +125,15 @@ class Map extends React.Component{
   // Close info window
   closeInfoWindow () {
     if (this.infoWindow) this.infoWindow.close();
+  }
+
+  // Show window and marker on new place click
+  showPlaceInfo (place) {
+    // set position for click event
+    const position = place.location;
+
+    // Create and show info window
+    this.showInfoWindow (this.placeInfoWindowContent(place, () => this.props.handlePlaces(place)), position);
   }
 
   newMarker (map, parameters, ...eventHandlingObjects) {
@@ -207,6 +193,92 @@ class Map extends React.Component{
     this.newPlaceMarker.setPosition(position);
   }
 
+  // Handle new place modal window with input fields
+  newPlaceModal = (position) => {
+    this.setNewPlacePosition(position);
+    this.showModal();
+  }
+
+  // Put new place data into places list
+  addNewPlace = (name, address, rating) => {
+    this.hideModal();
+    const place = {
+      location: this.state.newPlacePosition,
+      name: name,
+      place_id: name + (Math.random() * 1000000),
+      address: address,
+      rating: rating,
+      reviews: []
+    }
+    this.props.handlePlaces(place);
+  }
+
+  setNewPalceCursor () {
+    this.map.style.coursor = 'crosshair';
+  }
+
+  resetNewPlaceCoursor () {
+    this.map.style.coursor = 'default';
+  }
+
+  removeGoogleListener = (eventListener) => {
+    // prevent "no google object" error from create-react-app parser
+    const google = window.google;
+    if (eventListener) google.maps.event.removeListener(eventListener);
+  }
+
+  resetNewPlaceAction = () => {
+    this.hideMarker(this.newPlaceMarker);
+    this.closeInfoWindow();
+  }
+
+  // Set content for new place info window
+  newPlaceinfoWindowContent (position) {
+    // Define content of info window
+    const content = document.createElement('div');
+    // set content link and listener on click
+    content.innerHTML = '<a href="#">Add new place</a> <br />lat: ' + Math.floor(position.lat * 10000)/10000 + '<br />lng: ' + Math.floor(position.lng * 10000)/10000;
+    content.addEventListener('click', (e) => {
+      e.preventDefault();
+      // On click hide infoWindow and marker
+      this.closeInfoWindow();
+      this.hideMarker(this.newPlaceMarker);
+      // Handle input for new place
+      this.newPlaceModal(position);
+    });
+
+    return content;
+  }
+
+  // Show window and marker on new place click
+  showNewPlaceInfo (e) {
+    // set position for click event
+    const position = {lat: e.latLng.lat(), lng: e.latLng.lng()};
+
+    // Show newPlaceMarker inn new position
+    this.updateNewPlaceMarker(position);
+    this.showMarker(this.newPlaceMarker);
+
+    // Create and show info window
+    this.showInfoWindow (this.newPlaceinfoWindowContent(position), position);
+    // Add listener to remove new place marker while info window closes
+    const closeClick = this.infoWindow.addListener('closeclick', (e) => {
+      this.resetNewPlaceAction();
+      this.removeGoogleListener(closeClick)
+    });
+  }
+
+  // Add global listeners for Listing section elements
+  hideNewPlaceLiEvents = () => {
+    // prevent "no google object" error from create-react-app parser
+    const google = window.google;
+
+    let list = document.getElementById('list').getElementsByTagName('li');
+    for (var i = 0; i < list.length; i++) {
+      list[i].addEventListener('click', this.resetNewPlaceAction);
+    }
+  }
+
   // Create and add markers to map
   generateMarkers (places, map, infoWindow) {
     if (!map) return console.log('Google maps hasn\'t intialize yet, be patient... Thank You!');
@@ -235,14 +307,19 @@ class Map extends React.Component{
         // Single click displays current infoWindow
         {
           event: 'click',
-          handler: (e) => this.showInfoWindow(this.placeInfoWindowContent(place, placeHandler), markerParameters.position)
+          handler: (e) => {
+            // Show info window
+            this.showInfoWindow(this.placeInfoWindowContent(place, placeHandler), markerParameters.position);
+            // Hide new place marker
+            this.hideMarker(this.newPlaceMarker);
+          }
         },
         // Double click displays place details
         {
           event: 'dblclick',
           handler: placeHandler
         }
-      ]
+      ];
 
       // Create marker from props.list
       const newMarker = this.newMarker(map, markerParameters, ...eventHandlingObjects);
@@ -255,52 +332,6 @@ class Map extends React.Component{
     });
   }
 
-  // Handle new place input
-  handleNewPlace = (position) => {
-    this.setNewPlacePosition(position);
-    this.showModal();
-  }
-
-  // Put new place data into places list
-  addNewPlace = (name, address, rating) => {
-    this.hideModal();
-    const place = {
-      location: this.state.newPlacePosition,
-      name: name,
-      place_id: name + (Math.random() * 1000000),
-      address: address,
-      rating: rating,
-      reviews: []
-    }
-    this.props.handlePlaces(place);
-  }
-
-  // Show window and marker on new place click
-  showPlaceInfo (place) {
-    // set position for click event
-    const position = place.location;
-
-    // Create and show info window
-    this.showInfoWindow (this.placeInfoWindowContent(place, () => this.props.handlePlaces(place)), position);
-  }
-
-  // Show window and marker on new place click
-  showNewPlaceInfo (e) {
-    // set position for click event
-    const position = {lat: e.latLng.lat(), lng: e.latLng.lng()};
-
-    // Show newPlaceMarker inn new position
-    this.updateNewPlaceMarker(position);
-    this.showMarker(this.newPlaceMarker);
-
-    // Create and show info window
-    this.showInfoWindow (this.newPlaceinfoWindowContent(position), position);
-    // Add listener to remove new place marker while info window closes
-    const closeClick = this.infoWindow.addListener('closeclick', (e) => {
-      this.hideMarker(this.newPlaceMarker);
-      this.removeGoogleListener(closeClick);
-    });
-  }
 
   // Position map on visitor location
   geolocationMap (map) {
@@ -312,7 +343,7 @@ class Map extends React.Component{
           lng: position.coords.longitude
         };
 
-        map.setCenter(pos);
+        map.panTo(pos);
 
         this.setMyMarker (pos);
         this.setNewPlaceMarker (pos);
@@ -325,7 +356,11 @@ class Map extends React.Component{
     return undefined;
   }
 
-
+  // Initialize Google Map,
+  // Style Google Map,
+  // Pass this.map reference to parent component
+  // Generate refreshMarkers
+  // Center map on current position
   initMap () {
     // prevent "no google object" error from create-react-app parser
     const google = window.google;
@@ -360,14 +395,14 @@ class Map extends React.Component{
     this.infoWindow = new google.maps.InfoWindow();
 
     // Create markers
-    const currentPosition = this.generateMarkers(this.props.list, this.map, this.infoWindow);
+    this.generateMarkers(this.props.list, this.map, this.infoWindow);
 
     // Center map and show user
-    this.geolocationMap(this.map, currentPosition);
+    this.geolocationMap(this.map);
   }
 
   // Get search results for sushi in nearby location
-  sushiSearch(map) {
+  sushiSearch (map) {
     // prevent "no google object" error from create-react-app parser
     const google = window.google;
 
@@ -399,28 +434,26 @@ class Map extends React.Component{
     });
   }
 
-  // // Add place to list
-  // handlePlaceDetails(result, status){
-  //   var lastListElement = this.props.handleNewPlace(result);
-  //   this.createMarker(lastListElement.location, this.map);
-  // }
-
   render () {
     let modalNewPlace = null;
     let addNewPlaceSymbol = null;
     let refreshSymbol = null;
-    let newPlaceClickListener = null;
+    let newPlaceClickListener;
 
     if (!this.props.displayPlace && this.map) {
-      addNewPlaceSymbol = <Symbol className="plus" id="plus" handler={() =>
+      addNewPlaceSymbol = <Symbol className="plus" id="plus" handler={() => {
         // Add listner for adding new restaurant on click on the map
         newPlaceClickListener = this.map.addListener('click', (e) => {
           // Remove listner for adding new restaurant on click on the map
-          this.removeGoogleListener(newPlaceClickListener);
           this.showNewPlaceInfo(e);
-        })
-      }
-      alt="Add new such restaurant" />;
+          newPlaceClickListener.remove();
+          this.hideNewPlaceLiEvents();
+          // Remove new place map coursor style
+        });
+        // Set new place coursor style on map
+
+      }}
+      alt="Add new sushi restaurant" />;
       refreshSymbol = <Symbol className="refresh" id="refresh" handler={() => {
         // Search nearby and update places list
         this.sushiSearch(this.map);

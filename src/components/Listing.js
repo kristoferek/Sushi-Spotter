@@ -15,7 +15,7 @@ function Item (props) {
 
 function Listing (props) {
   return (
-    <Div id={props.id} className={props.className}>
+    <Div id="listing" className={props.className}>
       <Filter className="filter" filter={props.filter} updateFilter={props.updateFilter}/>
       <SectionList id={props.id}>
         {props.list.map((place) => <Item className="item" key={place.place_id} place={place} handlePlaces={props.handlePlaces} />)}
