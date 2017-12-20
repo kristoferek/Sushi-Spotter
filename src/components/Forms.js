@@ -93,7 +93,6 @@ class NewPlaceForm extends React.Component{
       alertPlaceName: false,
       placeAddressValue: this.props.address || '',
       alertPlaceAddress: false,
-      currentStar: 5
     };
   }
 
@@ -118,12 +117,6 @@ class NewPlaceForm extends React.Component{
   handlePlaceAddress = (e) => {
     this.setState({
       placeAddressValue: e.target.value
-    })
-  }
-
-  handleCurrentStar = (number) => {
-    this.setState({
-      currentStar: number
     })
   }
 
@@ -160,18 +153,7 @@ class NewPlaceForm extends React.Component{
 
     // Proceed if validated
     if (readyToSubmit)
-      this.props.handler(this.state.placeNameValue, this.state.placeAddressValue, this.state.currentStar);
-  }
-
-  displayStars = (counter) => {
-    let stars = [], emptyStar = '\u2606', filledStar = '\u2605', star;
-    for (var i = 1; i <= 5; i++) {
-      if (i <= counter) star = filledStar
-      else star = emptyStar;
-      let number = i;
-      stars.push(<Star key={'newReview' + number} handler={(e) => this.setState({ currentStar: number })}>{star}</Star>);
-    }
-    return stars;
+      this.props.handler(this.state.placeNameValue, this.state.placeAddressValue, 0);
   }
 
   render(){
@@ -183,11 +165,7 @@ class NewPlaceForm extends React.Component{
         <label htmlFor="placeAddress">Address:</label>
         <input id="placeAddress" type="text" name="placeAddress"  value={this.state.placeAddressValue} onChange={this.handlePlaceAddress} placeholder="Address..." />
         {this.handleAlert(this.state.alertPlaceAddress)}
-
-        <ul className="stars">
-          {this.displayStars(this.state.currentStar)}
-        </ul>
-
+        <br/>
         <Symbol id='submitNewPlace' className='button' handler={this.handleSubmit} alt="Add place">
           Add place
         </Symbol>

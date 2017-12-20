@@ -34,13 +34,13 @@ class Map extends React.Component{
     this.infoWindow = undefined;
   }
 
-  componentDidMount(){
+  componentDidMount () {
     // Load and inject Google JavaScript API with Google Places library
     // into index.html and when done run the callback function initMap()
     this.loadJS("https://maps.googleapis.com/maps/api/js?key=" + this.state.APIKey + "&callback=initMap&libraries=places");
   };
 
-  componentWillReceiveProps(nextProps) {
+  componentWillReceiveProps (nextProps) {
     let refreshMarkers = true;
     // Check if new props.list differs from current props.list and decide to refresh markers
     if (nextProps.list.length === this.props.list.length) {
@@ -49,15 +49,15 @@ class Map extends React.Component{
 
     // Create and display markers if Content.state.list updates
     if (refreshMarkers)
-    this.generateMarkers(nextProps.list, this.map, this.infoWindow);
+      this.generateMarkers(nextProps.list, this.map, this.infoWindow);
 
-    // Center map on currentPlace
-    if (nextProps.currentPlace){
-      // console.log(nextProps.currentPlace);
+    // Center map on newly selected currentPlace
+    if (nextProps.currentPlace) if (this.props.currentPlace !== nextProps.currentPlace) {
       this.map.panTo(nextProps.currentPlace.location);
       this.showPlaceInfo(nextProps.currentPlace);
     }
   }
+
 
   // Inject src script into index.html
   loadJS (src) {
@@ -213,12 +213,12 @@ class Map extends React.Component{
     this.props.handlePlaces(place);
   }
 
-  setNewPalceCursor () {
-    this.map.style.coursor = 'crosshair';
+  setNewPalceCursor = () => {
+    this.map.setOptions({draggableCursor: 'crossHair'});
   }
 
-  resetNewPlaceCoursor () {
-    this.map.style.coursor = 'default';
+  resetNewPlaceCoursor = () => {
+    this.map.setOptions({draggableCursor: ''});
   }
 
   removeGoogleListener = (eventListener) => {
@@ -230,6 +230,7 @@ class Map extends React.Component{
   resetNewPlaceAction = () => {
     this.hideMarker(this.newPlaceMarker);
     this.closeInfoWindow();
+    this.resetNewPlaceCoursor();
   }
 
   // Set content for new place info window
@@ -268,11 +269,8 @@ class Map extends React.Component{
     });
   }
 
-  // Add global listeners for Listing section elements
+  // Add global listeners for Listing item to reset new place action on click
   hideNewPlaceLiEvents = () => {
-    // prevent "no google object" error from create-react-app parser
-    const google = window.google;
-
     let list = document.getElementById('list').getElementsByTagName('li');
     for (var i = 0; i < list.length; i++) {
       list[i].addEventListener('click', this.resetNewPlaceAction);
@@ -332,9 +330,8 @@ class Map extends React.Component{
     });
   }
 
-
   // Position map on visitor location
-  geolocationMap (map) {
+  geolocationMap = (map) => {
     // Use visitor geolocation if browser suppoerts it
     if (navigator.geolocation) {
       const result = navigator.geolocation.getCurrentPosition((position) => {
@@ -356,53 +353,30 @@ class Map extends React.Component{
     return undefined;
   }
 
-  // Initialize Google Map,
-  // Style Google Map,
-  // Pass this.map reference to parent component
-  // Generate refreshMarkers
-  // Center map on current position
-  initMap () {
-    // prevent "no google object" error from create-react-app parser
-    const google = window.google;
-
-    const mapParameters = {
-      zoomControl: false,
-      streetViewControl: false,
-      scaleControl: true,
-      mapTypeControl: false,
-      center: {
-        lat: 52.2351118,
-        lng: 21.0352136
-      },
-      zoom: 14,
-      mapTypeControlOptions: {
-        mapTypeIds: ['roadmap', 'darkMap']
-        }
+  // Check if given coordinates fits in map getBounds
+  filterListInMapBounds = () => {
+    let googleMapBounds;
+    if (this.map) googleMapBounds = this.map.getBounds();
+    if (googleMapBounds) {
+      let inMapBoundList = [];
+      this.props.list.map((place) => {
+        if (googleMapBounds.contains(place.location)) inMapBoundList.push(place);
+        return undefined;
+      });
+      return inMapBoundList;
+    } else {
+      return this.props.list;
     }
-
-    // Initialize google map in HTML element with ref='map'
-    this.map = new google.maps.Map(this.refs.map, mapParameters);
-
-    // Style Map
-    const newMapStyle = new google.maps.StyledMapType(importedMapStyle);
-    this.map.mapTypes.set('darkMap', newMapStyle);
-    this.map.setMapTypeId('darkMap');
-
-    //Update parent component Content state.map reference
-    this.props.updateMap(this.map);
-
-    // Create infoWindow with initial value of first place on the list
-    this.infoWindow = new google.maps.InfoWindow();
-
-    // Create markers
-    this.generateMarkers(this.props.list, this.map, this.infoWindow);
-
-    // Center map and show user
-    this.geolocationMap(this.map);
   }
 
+  // Named function for bounds_changed listener
+  updateFilteredListInMapBounds = () => {
+   this.props.updateFilteredList(this.filterListInMapBounds());
+  }
+
+
   // Get search results for sushi in nearby location
-  sushiSearch (map) {
+  sushiSearch = (map) => {
     // prevent "no google object" error from create-react-app parser
     const google = window.google;
 
@@ -434,24 +408,75 @@ class Map extends React.Component{
     });
   }
 
+  // Initialize Google Map,
+  // Style Google Map,
+  // Pass this.map reference to parent component
+  // Generate refreshMarkers
+  // Center map on current position
+  initMap () {
+    // prevent "no google object" error from create-react-app parser
+    const google = window.google;
+
+    const mapParameters = {
+      zoomControl: true,
+      streetViewControl: false,
+      scaleControl: true,
+      mapTypeControl: false,
+      center: {
+        lat: 52.2351118,
+        lng: 21.0352136
+      },
+      zoom: 14,
+      mapTypeControlOptions: {
+        mapTypeIds: ['roadmap', 'darkMap']
+        }
+    }
+
+    // Initialize google map in HTML element with ref='map'
+    this.map = new google.maps.Map(this.refs.map, mapParameters);
+
+    // Style Map
+    const newMapStyle = new google.maps.StyledMapType(importedMapStyle);
+    this.map.mapTypes.set('darkMap', newMapStyle);
+    this.map.setMapTypeId('darkMap');
+
+    // Center map and show user
+    this.geolocationMap(this.map);
+
+    // Create infoWindow with initial value of first place on the list
+    this.infoWindow = new google.maps.InfoWindow();
+
+
+    // Create markers
+    this.generateMarkers(this.props.list, this.map, this.infoWindow);
+
+    //Update parent component Content state.map reference
+    this.props.updateMap(this.map);
+
+    // Add listner for zooming and panning to update filtered places list visible on map
+    google.maps.event.addListener(this.map, 'bounds_changed', this.updateFilteredListInMapBounds);
+  }
+
   render () {
     let modalNewPlace = null;
     let addNewPlaceSymbol = null;
     let refreshSymbol = null;
-    let newPlaceClickListener;
 
     if (!this.props.displayPlace && this.map) {
       addNewPlaceSymbol = <Symbol className="plus" id="plus" handler={() => {
+        // Set coursor to crosshair
+        this.setNewPalceCursor();
         // Add listner for adding new restaurant on click on the map
-        newPlaceClickListener = this.map.addListener('click', (e) => {
+        let newPlaceClickListener = this.map.addListener('click', (e) => {
           // Remove listner for adding new restaurant on click on the map
           this.showNewPlaceInfo(e);
+          // Reset coursor
+          this.resetNewPlaceCoursor();
+          // remove click listener on map
           newPlaceClickListener.remove();
+          // set listeners for list items to rmeove
           this.hideNewPlaceLiEvents();
-          // Remove new place map coursor style
         });
-        // Set new place coursor style on map
-
       }}
       alt="Add new sushi restaurant" />;
       refreshSymbol = <Symbol className="refresh" id="refresh" handler={() => {

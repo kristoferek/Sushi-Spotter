@@ -8,6 +8,7 @@
   height: 100%;
   width: 100%;
   animation: appear 2s;
+  background-image: url('./../img/placeholder.png');
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center center;

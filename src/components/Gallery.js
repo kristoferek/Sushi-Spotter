@@ -64,13 +64,15 @@ class Gallery extends React.Component{
   // or if no elements in photos array renders nothing
   render () {
     if (this.props.elements)
-      return <Photo id={this.props.id} className={this.props.gallery} style={this.setBackground(this.state.index)}>
-        <Symbol className='bigArrow' id='previous' handler={this.previousIndex} alt='Previous photo' />
-        <Symbol className='bigArrow' id='next' handler={this.nextIndex} alt='Next photo' />
-      </Photo>
+      return (
+        <Photo id={this.props.id} className={this.props.gallery} style={this.setBackground(this.state.index)}>
+          <Symbol className='bigArrow' id='previous' handler={this.previousIndex} alt='Previous photo' />
+          <Symbol className='bigArrow' id='next' handler={this.nextIndex} alt='Next photo' />
+        </Photo>
+      );
     else return (
       <div id={this.props.id} className={this.props.className}>
-        No photo available
+        
       </div>
     );
   }
