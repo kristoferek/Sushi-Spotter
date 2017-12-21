@@ -1,10 +1,11 @@
 {
-  "main.css": "static/css/main.dd4e44af.css",
-  "main.css.map": "static/css/main.dd4e44af.css.map",
-  "main.js": "static/js/main.bc541e21.js",
-  "main.js.map": "static/js/main.bc541e21.js.map",
+  "main.css": "static/css/main.dfd63cd7.css",
+  "main.css.map": "static/css/main.dfd63cd7.css.map",
+  "main.js": "static/js/main.a265d6e7.js",
+  "main.js.map": "static/js/main.a265d6e7.js.map",
   "static\\media\\here.svg": "static/media/here.00d1e9ac.svg",
   "static\\media\\new_sushi.svg": "static/media/new_sushi.3a1236ae.svg",
+  "static\\media\\placeholder.png": "static/media/placeholder.803ed751.png",
   "static\\media\\refresh.svg": "static/media/refresh.8dd708f1.svg",
   "static\\media\\sushi.svg": "static/media/sushi.6a4a11da.svg"
 }
