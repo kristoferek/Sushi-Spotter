@@ -45,11 +45,12 @@ class Map extends React.Component{
     // Check if new props.list differs from current props.list and decide to refresh markers
     if (nextProps.list.length === this.props.list.length) {
       refreshMarkers = nextProps.list.some((place, i) => place.place_id !== this.props.list[i].place_id);
-    }
+    } else this.props.updateFilteredList(this.filterListInMapBounds(nextProps.list));
 
     // Create and display markers if Content.state.list updates
-    if (refreshMarkers)
+    if (refreshMarkers) {
       this.generateMarkers(nextProps.list, this.map, this.infoWindow);
+    }
 
     // Center map on newly selected currentPlace
     if (nextProps.currentPlace) if (this.props.currentPlace !== nextProps.currentPlace) {
@@ -354,12 +355,12 @@ class Map extends React.Component{
   }
 
   // Check if given coordinates fits in map getBounds
-  filterListInMapBounds = () => {
+  filterListInMapBounds = (list) => {
     let googleMapBounds;
     if (this.map) googleMapBounds = this.map.getBounds();
     if (googleMapBounds) {
       let inMapBoundList = [];
-      this.props.list.map((place) => {
+      list.map((place) => {
         if (googleMapBounds.contains(place.location)) inMapBoundList.push(place);
         return undefined;
       });
@@ -371,7 +372,7 @@ class Map extends React.Component{
 
   // Named function for bounds_changed listener
   updateFilteredListInMapBounds = () => {
-   this.props.updateFilteredList(this.filterListInMapBounds());
+   this.props.updateFilteredList(this.filterListInMapBounds(this.props.list));
   }
 
 
