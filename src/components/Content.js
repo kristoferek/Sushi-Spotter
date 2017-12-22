@@ -3,6 +3,17 @@ import Map from './Map.js';
 import Info from './Info.js';
 import '../css/content.css';
 
+// Sample
+// currentPlace:{
+//   location: {
+//     lat: 52.23303800000001,
+//     lng: 21.01950599999998
+//   },
+//   name: "Besuto Sushi Bar",
+//   place_id: "ChIJlyrHiPbMHkcRG2jOH2ImCA4",
+//   rating: 4.3,
+//   address: "Nowy Świat 27, Warszawa"
+// },
 class Content extends React.Component{
   constructor(props){
     super(props);
@@ -10,18 +21,7 @@ class Content extends React.Component{
       list: [],
       filteredList: undefined,
       currentPlace: undefined,
-      // currentPlace:{
-      //   location: {
-      //     lat: 52.23303800000001,
-      //     lng: 21.01950599999998
-      //   },
-      //   name: "Besuto Sushi Bar",
-      //   place_id: "ChIJlyrHiPbMHkcRG2jOH2ImCA4",
-      //   rating: 4.3,
-      //   address: "Nowy Świat 27, Warszawa"
-      // },
       displayPlace: false,
-      // map: google.maps.Map(),
       map: undefined,
       filter: {
         min: 0,
@@ -55,7 +55,6 @@ class Content extends React.Component{
         this.setState({
           list:  myList
         });
-        // console.log(this.state.list);
       }
     })
     // else alert error
